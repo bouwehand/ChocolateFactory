@@ -1,0 +1,1 @@
+{"Cli":{"module":"Cli"},"core":{"module":"core"},"MVC":{"module":"MVC","default":{"homepage":"home","action":"home","model":"home"},"dir":{"views":"views"}},"Darwin":{"module":"Darwin","cli":{"darwin":"darwin.php"}},"Forex":{"module":"Forex","cli":{"feed":"feed.php","market":"runMarket.php"}}}
