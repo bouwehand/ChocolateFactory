@@ -10,23 +10,168 @@ class ClarcInstrument {
      * @var
      */
     protected $_name;
-
     protected $_step;
-
     protected $_rate;
+    protected $_delta;
 
     /**
      * @var
      */
     protected $_trendLength;
-
-
     protected $_offset;
 
     /**
      * @var
      */
-    protected $_trend;
+    static protected $_instruments;
+    static protected $_relations;
+
+    static public function create($name)
+    {
+        $new = new self;
+        $new->setName($name);
+        self::addInstrument($new);
+        return $new;
+    }
+
+    static public function reset()
+    {
+        self::$_instruments = null;
+        self::$_relations   = null;
+    }
+
+    public static function createRelations($new){
+
+        // create the relation instuments
+        $instruments = self::getInstruments();
+        if(!empty($instruments)) {
+            foreach($instruments as $instrument) {
+                if($instrument->getName() != $new->getName()) {
+                    $relation = new self;
+                    $relationName = $new->getName() . ucfirst($instrument->getName());
+                    $relation->setName($relationName);
+                    $rate = $new->getRate();
+                    $lastRate = $instrument->getRate();
+                    $relation->setDelta($rate, $lastRate);
+                    self::addRelation($relation);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getRelations()
+    {
+        return self::$_relations;
+    }
+
+    /**
+     * @param mixed $relation
+     */
+    public static function addRelation($relation)
+    {
+        self::$_relations[] = $relation;
+    }
+
+    /**
+     * Returns an relational instrument by name
+     *
+     * @param $name
+     * @return null
+     * @throws Exception
+     */
+    static public function getRelationByName($name)
+    {
+
+        $instruments = self::getRelations();
+
+        if (empty($instruments)) {
+            throw new Exception('no instuments!');
+        }
+
+        foreach ($instruments as $instrument) {
+            if ($instrument->getName() == $name) {
+                return $instrument;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param mixed $child
+     */
+    public function addChild($child)
+    {
+        $this->_children[] = $child;
+    }
+
+    /**
+     * @return mixed
+     */
+    static public function getInstruments()
+    {
+        return self::$_instruments;
+    }
+
+    /**
+     * Returns an instrument by name
+     *
+     * @param $name
+     * @return null
+     * @throws Exception
+     */
+    static public function getInstrumentByName($name)
+    {
+
+        $instruments = self::getInstruments();
+
+        if (empty($instruments)) {
+            throw new Exception('no instuments!');
+        }
+
+        foreach ($instruments as $instrument) {
+            if ($instrument->getName() == $name) {
+                return $instrument;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param mixed $instruments
+     */
+    public function setInstruments($instruments)
+    {
+        $this->_instruments = $instruments;
+    }
+
+    /**
+     * @param mixed $instruments
+     */
+    static public function addInstrument($instruments)
+    {
+        self::$_instruments[] = $instruments;
+    }
+
+    /**
+     * @param $first
+     * @param $last
+     * @internal param mixed $delta
+     */
+    public function setDelta($first, $last)
+    {
+        $this->_delta = ($last - $first) / $last;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDelta()
+    {
+        return $this->_delta;
+    }
 
     /**
      * @param mixed $offset
@@ -125,20 +270,21 @@ class ClarcInstrument {
         return $this->_name;
     }
 
-    public function loadData()
+    public function loadData($step)
     {
-        $step = $this->getStep();
+
         if($step >= $this->getTrendLength() + $this->getOffset()) {
             $data = new DataHandler();
             $trend = $data->getTrend(
                 clarc::TRADING_CURRENCY_CODE,
-                $this->getStep(),
+                $step,
                 $this->getTrendLength(),
                 $this->getOffset()
             );
             $rate = Tools::movingAverage($trend, $this->getTrendLength());
         } else $rate = 0;
         $this->setRate($rate);
+        return $rate;
     }
 
 }

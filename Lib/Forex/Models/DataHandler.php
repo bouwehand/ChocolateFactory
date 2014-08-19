@@ -15,12 +15,12 @@ class DataHandler{
     /**
      *
      */
-    const FIRST_STEP_NUM = 1;
+    const FIRST_STEP_NUM = 300;
 
     /**
      * 3894
      */
-    const MAX_STEP_NUM = 3894;
+    const MAX_STEP_NUM = 400;
     /**
      * @var array Last step in game
      */

@@ -17,14 +17,39 @@
  */
 class Worm {
 
+    /**
+     * @var
+     */
     protected $_id;
 
-
+    /**
+     * @var
+     */
     protected $_fitness;
 
+    /**
+     * @var
+     */
     protected $_gen;
 
-    protected $_lastCurrencyRate;
+    protected $_market;
+
+    /**
+     * @param mixed $market
+     */
+    public function setMarket($market)
+    {
+        $this->_market = $market;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMarket()
+    {
+        return $this->_market;
+    }
+
 
     /**
      * @param int $gen
@@ -56,27 +81,48 @@ class Worm {
     function __construct($id) {
 
         $this->setId($id);
+        $gen = $this->createGen();
+        $this->setGen($gen);
+    }
 
+    public function createGen()
+    {
+
+        $gen['buy'] = $this->createChromosome();
+        $gen['sell'] = $this->createChromosome();
+
+        return $gen;
+    }
+
+    public function createChromosome()
+    {
         $nodeNames = array(
-          "currency", "lip", "teeth", "jaw"
+            "currency", "lip", "teeth", "jaw"
         );
 
+        $chromosome = array();
         foreach($nodeNames as $name) {
-            $nodes[$name]['last']['min'] = $this->createValue();
-            $nodes[$name]['last']['max'] = $this->createValue();;
+
+            $nucloid = new stdClass();
+            $nucloid->name = 'last' . ucfirst($name);
+            $nucloid->min = $this->createGenValue();
+            $nucloid->max = $this->createGenValue();
+            $chromosome[] = $nucloid;
             foreach($nodeNames as $second) {
                 if($second != $name) {
-                    $nodes[$name][$second]['min'] = $this->createValue();
-                    $nodes[$name][$second]['max'] = $this->createValue();;
+                    $nucloid = new stdClass();
+                    $nucloid->name = $name . ucfirst($second);
+                    $nucloid->min = $this->createGenValue();
+                    $nucloid->max = $this->createGenValue();
+                    $chromosome[] = $nucloid;
                 }
             }
         }
-
-        $this->setGen($nodes);
-        die(var_dump($this));
+        return $chromosome;
     }
 
-    public function createValue()
+
+    public function createGenValue()
     {
         $dice = mt_rand(1, 3);
         switch($dice) {
@@ -129,7 +175,13 @@ class Worm {
      * Go out and play
      */
     public function play() {
-        $market = new Market();
+
+        $market = $this->getMarket();
+
+        $clarc = new Clarc();
+
+        $clarc->infuse($this->getGen());
+        $market->setClarc($clarc);
         $market->run();
         $finalResult = $market->getCloseValue();
         $this->setFitness($finalResult);

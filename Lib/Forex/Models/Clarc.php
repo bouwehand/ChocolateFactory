@@ -32,23 +32,25 @@ class Clarc
     public $currency;
 
 
-    protected $_instruments;
+    protected $_gen;
 
     /**
-     * The length of the different trends used by the clarc
-     * @var logest trendlength
+     * @param mixed $gen
      */
-    protected $trendlengths = array(8, 13);
+    public function setGen($gen)
+    {
+        $this->_gen = $gen;
+    }
 
     /**
-     * @var array of trend
+     * @return mixed
      */
-    protected $trend = array();
+    public function getGen()
+    {
+        return $this->_gen;
+    }
 
-    /**
-     * @var array of moving avarages
-     */
-    public $movingAvarages = array();
+
 
     function __construct()
     {
@@ -157,89 +159,62 @@ class Clarc
         $this->loadCurrency($this::TRADING_CURRENCY_CODE, $this->getStep());
 
         // reset the instruments
-        $this->setInstruments();
+        ClarcInstrument::reset();
 
-        // create the jaw
-        $jaw = new ClarcInstrument();
-        $jaw->setName('jaw');
-        $jaw->setStep($step);
-        $jaw->setTrendLength(13);
-        $jaw->setOffset(13);
-        $jaw->loadData();
-        $this->addInstrument($jaw);
-
-        // create the Teeth
-        $teeth = new ClarcInstrument();
-        $teeth->setName('teeth');
-        $teeth->setStep($step);
-        $teeth->setTrendLength(8);
-        $teeth->setOffset(8);
-        $teeth->loadData();
-        $this->addInstrument($teeth);
+        // create the currency
+        $dataHandler = new DataHandler();
+        $lastCurrency = $dataHandler->getStepForCurrency($this::TRADING_CURRENCY_CODE, $step -1);
+        $instrument = ClarcInstrument::create('currency');
+        $instrument->setStep($step);
+        $instrument->setRate($this->currency);
+        $instrument->setDelta($this->currency, $lastCurrency);
+        ClarcInstrument::createRelations($instrument);
 
         // create the lip
-        $lip = new ClarcInstrument();
-        $lip->setName('lip');
-        $lip->setStep($step);
-        $lip->setTrendLength(5);
-        $lip->setOffset(5);
-        $lip->loadData();
-        $this->addInstrument($lip);
+        $instrument = ClarcInstrument::create('lip');
+        $instrument->setStep($step);
+        $instrument->setTrendLength(5);
+        $instrument->setOffset(5);
+        $trend     = $instrument->loadData($step);
+        $lastTrend = $instrument->loadData($step -1);
+        $instrument->setDelta($trend, $lastTrend);
+        ClarcInstrument::createRelations($instrument);
 
-        // set the clarc data
-        $clarcData = new ClarcData();
-        $dataHandler = new DataHandler();
+        // create the Teeth
+        $instrument = ClarcInstrument::create('teeth');
+        $instrument->setStep($step);
+        $instrument->setTrendLength(8);
+        $instrument->setOffset(8);
+        $trend     = $instrument->loadData($step);
+        $lastTrend = $instrument->loadData($step -1);
+        $instrument->setDelta($trend, $lastTrend);
+        ClarcInstrument::createRelations($instrument);
 
-        $clarcData->step = $step;
+        // create the jaw
+        $instrument = ClarcInstrument::create('jaw');
+        $instrument->setStep($step);
+        $instrument->setTrendLength(13);
+        $instrument->setOffset(13);
+        $trend     = $instrument->loadData($step);
+        $lastTrend = $instrument->loadData($step -1);
+        $instrument->setDelta($trend, $lastTrend);
+        ClarcInstrument::createRelations($instrument);
+    }
 
-        $lastCurrency = $dataHandler->getStepForCurrency($this::TRADING_CURRENCY_CODE, $step -1);
-        $clarcData->lastCurrencyRate = ($this->currency - $lastCurrency) / $this->currency;
+    /**
+     * Calculate the rates for the data
+     *
+     * @param $current
+     * @param $last
+     * @return float
+     */
+    public function calculateRate($current, $last)
+    {
+        return ($current - $last) / $current;
+    }
 
-        $clarcData->currencyLipRate = ($this->currency - $lip->getRate()) / $this->currency;
-
-        // create the lastlip
-        $lastStep = $this->getStep() - 1;
-        $lastLip = new ClarcInstrument();
-        $lastLip->setStep($lastStep);
-        $lastLip->setTrendLength($lip->getTrendLength());
-        $lastLip->setOffset($lip->getOffset());
-        $lastLip->loadData();
-
-        // check if the lip stands up
-        $clarcData->lastLipRate = ($lip->getRate() - $lastLip->getRate()) / $lip->getRate();
-
-        $clarcData->lipJawRate = ($lip->getRate() - $jaw->getRate()) / $lip->getRate();
-
-        // check if lip is above teeth
-        $clarcData->lipTeethRate = ($lip->getRate() - $teeth->getRate()) / $lip->getRate();
-
-        // create last teeth
-        $lastTeeth = new ClarcInstrument();
-        $lastTeeth->setStep($lastStep);
-        $lastTeeth->setTrendLength($teeth->getTrendLength());
-        $lastTeeth->setOffset($teeth->getOffset());
-        $lastLip->loadData();
-
-        // check if the teeth stand up
-        $clarcData->lastTeethRate = ($teeth->getRate() - $lastTeeth->getRate()) / $teeth->getRate();
-
-        // start checking the jaw
-        $jaw = $this->getInstrumentByName('jaw');
-
-        // check if the teeth are above the jaw
-        $clarcData->teethJawRate = ($teeth->getRate() - $jaw->getRate()) / $teeth->getRate();
-
-
-        // create last jaw
-        $lastJaw = new ClarcInstrument();
-        $lastJaw->setStep($lastStep);
-        $lastJaw->setTrendLength($jaw->getTrendLength());
-        $lastJaw->setOffset($jaw->getOffset());
-        $lastJaw->loadData();
-
-        $clarcData->currencyJawRate = ($this->currency - $jaw->getRate()) / $this->currency;
-        $clarcData->lastJawRate = ($jaw->getRate() - $lastJaw->getRate()) / $jaw->getRate();
-        $this->addData($clarcData);
+    public function infuse($gen) {
+        $this->_gen = $gen;
     }
 
     /**
@@ -255,39 +230,7 @@ class Clarc
      */
     public function getInstruments()
     {
-        return $this->_instruments;
-    }
-
-    /**
-     * Returns an instrument by name
-     *
-     * @param $name
-     * @return null
-     * @throws Exception
-     */
-    public function getInstrumentByName($name)
-    {
-
-        $instruments = $this->getInstruments();
-
-        if (empty($instruments)) {
-            throw new Exception('no instuments!');
-        }
-
-        foreach ($instruments as $instrument) {
-            if ($instrument->getName() == $name) {
-                return $instrument;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param ClarcInstrument $instrument
-     */
-    public function addInstrument(ClarcInstrument $instrument)
-    {
-        $this->_instruments[] = $instrument;
+        return ClarcInstrument::getInstruments();
     }
 
     /**
@@ -297,31 +240,36 @@ class Clarc
      */
     public function identifyBuy()
     {
-        $buy = true;
-        $data = $this->getData();
-        $clarcData = end($data);
-
-
         // lock if we are in a buy
         if ($this->in) {
-            $buy = false;
+            return 0;
         }
 
-        // check if the rate is above the lip
-        if (!($clarcData->currencyLipRate >= 0)) $buy = false;
-        if (!($clarcData->lastLipRate > 0)) $buy = false;
-       // if (!($clarcData->lipTeethRate > 0)) $buy = false;
-       // if (!($clarcData->lastTeethRate > 0)) $buy = false;
-       // if (!($clarcData->teethJawRate > 0)) $buy = false;
-        //if (!($clarcData->currencyJawRate >0)) $buy = false;
-        if(!($clarcData->lipJawRate > 0)) $buy = false;
-
-        if ($buy) {
-            // all conditions met. We have a buy
-            $this->in = 1;
-            return 1;
+        $relation = ClarcInstrument::getInstrumentByName('lip');
+        if($relation->getStep() == 341) {
+            //die(var_dump($relation));
         }
-        return 0;
+        if(! ($relation->getDelta() > 0 )) {
+            return 0;
+        }
+
+        $relation = ClarcInstrument::getRelationByName('lipCurrency');
+        if(! ($relation->getDelta() > 0 )) {
+            return 0;
+        }
+
+        $relation = ClarcInstrument::getRelationByName('teethLip');
+        if(! ($relation->getDelta() > 0 )) {
+            return 0;
+        }
+
+        $relation = ClarcInstrument::getRelationByName('jawTeeth');
+        if(! ($relation->getDelta() > 0 )) {
+            return 0;
+        }
+
+        $this->in = 1;
+        return 1;
 
     }
 
@@ -331,18 +279,19 @@ class Clarc
      */
     public function indentifySell()
     {
-        $clarcData = $this->getData();
-        $clarcData = end($clarcData);
 
         // cant sell if we're not i a buy
         if (!$this->in) {
             return 0;
         }
 
-        $lip = $this->getInstrumentByName('lip');
-        $teeth = $this->getInstrumentByName('teeth');
+        $relation = ClarcInstrument::getRelationByName('lipCurrency');
+        if(! ($relation->getDelta() < 0 )) {
+            return 0;
+        }
 
-        if (!($clarcData->lipTeethRate <= 0)) {
+        $relation = ClarcInstrument::getRelationByName('teethCurrency');
+        if(! ($relation->getDelta() < 0 )) {
             return 0;
         }
 
@@ -374,8 +323,6 @@ class Clarc
         $account -= ($account * 0.0140);
         $this->setAccount($account);
     }
-
-
 
     /**
      * Sell currency

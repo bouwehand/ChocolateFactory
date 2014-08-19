@@ -19,6 +19,24 @@ class Market
      */
     protected $_marketData = array();
 
+    protected $_clarc;
+
+    /**
+     * @param mixed $clarc
+     */
+    public function setClarc($clarc)
+    {
+        $this->_clarc = $clarc;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClarc()
+    {
+        return $this->_clarc;
+    }
+
     /**
      * @param array $marketData
      */
@@ -67,13 +85,11 @@ class Market
     public function run()
     {
         $dataHandler    = new DataHandler();
-        $clarc          = new Clarc();
+        $clarc          = $this->getClarc();
         $account        = $clarc->getAccount();
 
-//        $step       = $dataHandler::FIRST_STEP_NUM;
-//        $max        = $dataHandler::MAX_STEP_NUM;
-        $step = 700;
-        $max = 800;
+        $step       = $dataHandler::FIRST_STEP_NUM;
+        $max        = $dataHandler::MAX_STEP_NUM;
 
         while ($step <= $max) {
 
@@ -107,8 +123,6 @@ class Market
             $step = $step + 1;
         }
         $this->setCloseValue($account);
-
-        die(var_dump($clarc->getData()));
     }
 
     /**
