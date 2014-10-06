@@ -5,7 +5,7 @@
  * Date: 5/14/14
  * Time: 7:45 PM
  */
-class Graph {
+class GoogleGraph {
 
     protected $table;
 

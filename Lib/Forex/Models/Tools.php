@@ -6,7 +6,7 @@
  *
  * this is is a static class for using static manipulation
  */
-class tools {
+class Tools {
 
     const ARRAY_SLICE_START = 0;
 

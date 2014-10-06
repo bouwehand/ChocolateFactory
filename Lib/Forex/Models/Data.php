@@ -5,13 +5,8 @@
  * Date: 4/19/14
  * Time: 5:26 PM
  */
-class DataHandler{
+class Data{
 
-    protected $_query;
-    /**
-     *
-     */
-    const RATES_TABLE_NAME = 'horizontal';
     /**
      *
      */
@@ -21,14 +16,41 @@ class DataHandler{
      * 3894
      */
     const MAX_STEP_NUM = 400;
+    
     /**
      * @var array Last step in game
      */
     protected  $_lastStep = array();
 
+    /**
+     * @var Query object
+     */
+    protected $_query;
+    
+    /**
+     *
+     */
+    protected  $_tableName;
+
+    /**
+     * @param mixed $tableName
+     */
+    public function setTableName($tableName)
+    {
+        $this->_tableName = $tableName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTableName()
+    {
+        return $this->_tableName;
+    }
+
+    
+
     public function __construct () {
-        $this->_query = Query::getInstance();
-        $this->_query->setTable(self::RATES_TABLE_NAME);
         return $this;
     }
 
@@ -42,7 +64,10 @@ class DataHandler{
      * @return int
      */
     public function getStep($step, $verbose = false) {
-        $sql = "SELECT * FROM `". $this::RATES_TABLE_NAME . "` WHERE id = $step";
+        $this->_query = Query::getInstance();
+        $this->_query->setTable($this->getTableName());
+
+        $sql = "SELECT * FROM `". $this->getTableName() . "` WHERE id = $step";
         return $this->_query->fetchAll($sql);
     }
 
@@ -54,6 +79,9 @@ class DataHandler{
      * @return int rate of the currency on step
      */
     public function getStepForCurrency($currency, $step) {
+        $this->_query = Query::getInstance();
+        $this->_query->setTable($this->getTableName());
+
         $sql = "SELECT `" . $currency . "` FROM `". $this->_query->getTable() . "` WHERE `id` = " . $step;
 
         $array = $this->_query->fetchOne($sql);
@@ -70,6 +98,8 @@ class DataHandler{
      * @return array
      */
     public function getTrend($currencyCode, $step, $number, $offset = null) {
+        $this->_query = Query::getInstance();
+        $this->_query->setTable($this->getTableName());
 
         $sql =
             "SELECT id, " . $currencyCode . " FROM `". $this->_query->getTable()
@@ -121,5 +151,4 @@ class DataHandler{
     {
         $this->MAX_STEP_NUM = $MAX_STEP_NUM;
     }
-
 }

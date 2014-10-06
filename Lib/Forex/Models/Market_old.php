@@ -84,13 +84,12 @@ class Market
      */
     public function run()
     {
-        $data    = new AAPL();
-
+        $dataHandler    = new DataHandler();
         $clarc          = $this->getClarc();
         $account        = $clarc->getAccount();
 
-        $step       = 10;
-        $max        = 100;
+        $step       = $dataHandler::FIRST_STEP_NUM;
+        $max        = $dataHandler::MAX_STEP_NUM;
 
         while ($step <= $max) {
 
@@ -99,8 +98,7 @@ class Market
             $marketData->step = $step;
 
             // set the currency rate
-            $currency         = $data->getStep($step);
-            die(var_dump($currency));
+            $currency         = $dataHandler->getStepForCurrency($clarc::TRADING_CURRENCY_CODE, $step);
             $marketData->rate = number_format($currency, 8);
             $marketData->lip  = $currency;
             $marketData->beak = $currency;

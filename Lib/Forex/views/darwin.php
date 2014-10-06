@@ -20,26 +20,10 @@
  */
 $market = new Market();
 $clarc  = new Clarc();
-$worm   = new Worm(1);
-$clarc->infuse($worm->getGen());
+//$worm   = new Worm(1);
+//$clarc->infuse($worm->getGen());
 $market->setClarc($clarc);
 $market->run();
-
-$graph = new Graph();
-
-foreach ($market->getMarketData() as $i => $marketData) {
-    if($i == 0) $graph->setTitles( array( 'date' , $marketData->currency ,  'avarage', 'lip') );
-    //  draw step in
-
-    if($marketData->rate != 0){
-        $graph->addRow(array(
-            $marketData->step,
-            $marketData->rate,
-            $marketData->beak,
-            $marketData->lip,
-        ));
-    }
-}
 ?>
 <html>
 <head>
@@ -63,30 +47,65 @@ foreach ($market->getMarketData() as $i => $marketData) {
             data.addColumn({type:'string', role:'annotation'}); // annotation role col.
             data.addColumn({type:'string', role:'annotationText'}); // annotationText col.
             data.addColumn('number', 'lip'); // Implicit series 1 data col.
+            data.addColumn({type:'string', role:'annotation'}); // annotation role col.
+            data.addColumn({type:'string', role:'annotationText'}); // annotationText col.
             data.addColumn('number', 'teeth'); // Implicit series 1 data col.
+            data.addColumn({type:'string', role:'annotation'}); // annotation role col.
+            data.addColumn({type:'string', role:'annotationText'}); // annotationText col.
             data.addColumn('number', 'jaw'); // Implicit series 1 data col.
+            data.addColumn({type:'string', role:'annotation'}); // annotation role col.
+            data.addColumn({type:'string', role:'annotationText'}); // annotationText col.
             data.addRows([
             <?php foreach($market->getMarketData()  as $marketData) : ?>
                 <?php if($marketData->rate != 0) :
-                         $annotationText = "'step : $marketData->step rate: $marketData->rate lip: $marketData->lip beak: $marketData->beak '";
+                         $BuyAnnotationText = "'step : $marketData->step rate: $marketData->rate lip: $marketData->lip beak: $marketData->beak '";
                          if($marketData->buy) {
-                                $annotation = "'B'";
+                                $buyAnnotation = "'B'";
                             }elseif($marketData->sell) {
-                                $annotation = "'S'";
-
+                                $buyAnnotation = "'S'";
                             }else {
-                               $annotation = 'null';
-                               $annotationText = 'null';
+                               $buyAnnotation = 'null';
+                               $BuyAnnotationText = 'null';
                             }
                     ?>
                     [
                         <?php echo $marketData->step; ?> ,
                         <?php echo $marketData->rate; ?> ,
-                        <?php echo $annotation; ?> ,
-                        <?php echo $annotationText; ?>,
+                        <?php echo $buyAnnotation; ?> ,
+                        <?php echo $BuyAnnotationText; ?>,
                         <?php echo $marketData->lip; ?>,
+                        <?php
+                        $Annotation = 'null';
+                        $AnnotationText = "'T'";
+                        if($marketData->lipTrend) {
+                           $Annotation = "'T'";
+                           $AnnotationText = "'" .$marketData->liptAnn . "'";
+                        }
+                        ?>
+                        <?php echo $Annotation; ?> ,
+                        <?php echo $AnnotationText; ?>,
                         <?php echo $marketData->teeth; ?>,
-                        <?php echo $marketData->jaw; ?>
+                        <?php
+                        $Annotation = 'null';
+                        $AnnotationText = "'T'";
+                        if($marketData->teethTrend) {
+                           $Annotation = "'T'";
+                           $AnnotationText = "'" .$marketData->teethtAnn . "'";
+                        }
+                        ?>
+                        <?php echo $Annotation; ?> ,
+                        <?php echo $AnnotationText; ?>,
+                        <?php echo $marketData->jaw; ?>,
+                        <?php
+                        $Annotation = 'null';
+                        $AnnotationText = "'T'";
+                        if($marketData->jawTrend) {
+                           $Annotation = "'T'";
+                           $AnnotationText = "'" .$marketData->jawtAnn . "'";
+                        }
+                        ?>
+                        <?php echo $Annotation; ?> ,
+                        <?php echo $AnnotationText; ?>
                     ],
                     <?php endif;?>
                 <?php endforeach; ?>
@@ -102,18 +121,18 @@ foreach ($market->getMarketData() as $i => $marketData) {
     </script>
 </head>
 <body>
-    <div id="chart_div" style="width: <?php echo count($market->getMarketData()) * 5; ?> ; height: 500px;"></div>
+    <div id="chart_div" style="width: <?php echo count($market->getMarketData()) * 7; ?> ; height: 1000px;"></div>
 <?php
-
-echo  "step \t";
-echo  "rate \t";
-echo  "lip \t";
-echo  "teeth \t";
-echo  "jaw \t";
-echo  "currency \t";
-echo  "account \t";
-echo "<br/>";
+    echo  "step \t";
+    echo  "rate \t";
+    echo  "lip \t";
+    echo  "teeth \t";
+    echo  "jaw \t";
+    echo  "currency \t";
+    echo  "account \t";
+    echo "<br/>";
     foreach($market->getMarketData()  as $i => $marketState) {
+
             echo $marketState->step . "\t";
             echo number_format($marketState->rate, 8). "\t";
             echo number_format($marketState->lip, 8) . "\t";

@@ -17,63 +17,131 @@
  */
 class Worm {
 
+    const VECTOR_SIZE = 10;
+    const OUTPUT_LAYER_SIZE = 1;
+
     /**
      * @var
      */
     protected $_id;
 
-    /**
-     * @var
+    /*
+     * 1 = male, 0 = female
      */
-    protected $_fitness;
+    protected $_gender = 0;
+
+    protected $_vector      = array();
+
+    protected $_weights     = array();
+
+    protected $_hiddenLayer = array();
+
+    protected $_interval;
+
+    protected $_openRate;
+
+    protected $_pips = 0;
+
+    protected $_in = false;
 
     /**
-     * @var
+     * @param array $hiddenLayer
      */
-    protected $_gen;
-
-    protected $_market;
-
-    /**
-     * @param mixed $market
-     */
-    public function setMarket($market)
+    public function setHiddenLayer($hiddenLayer)
     {
-        $this->_market = $market;
+        $this->_hiddenLayer = $hiddenLayer;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHiddenLayer()
+    {
+        return $this->_hiddenLayer;
+    }
+
+    /**
+     * @param mixed $gender
+     */
+    public function setGender($gender)
+    {
+        $this->_gender = $gender;
     }
 
     /**
      * @return mixed
      */
-    public function getMarket()
+    public function getGender()
     {
-        return $this->_market;
+        return $this->_gender;
+    }
+
+    /**
+     * @param mixed $openRate
+     */
+    public function setOpenRate($openRate)
+    {
+        $this->_openRate = $openRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpenRate()
+    {
+        return $this->_openRate;
     }
 
 
     /**
-     * @param int $gen
+     * @return mixed
      */
-    public function setGen($gen)
+    public function getIn()
     {
-        $this->_gen = $gen;
+        return $this->_in;
     }
 
     /**
-     * @return int
+     * @param mixed $in
      */
-    public function getGen()
+    public function setIn($in)
     {
-        return $this->_gen;
+        $this->_in = $in;
+    }
+
+
+    /**
+     * @param mixed $interval
+     */
+    public function setInterval($interval)
+    {
+        $this->_interval = $interval;
     }
 
     /**
-     * @param int $gen
+     * @return mixed
      */
-    public function addGen($gen)
+    public function getInterval()
     {
-        $this->_gen[] = $gen;
+        return $this->_interval;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getWeights()
+    {
+        return $this->_weights;
+    }
+
+    /**
+     * @param mixed $weights
+     */
+    public function setWeights($weights)
+    {
+        $this->_weights = $weights;
+    }
+
 
     /**
      * @param $id Generation id
@@ -81,63 +149,27 @@ class Worm {
     function __construct($id) {
 
         $this->setId($id);
-        $gen = $this->createGen();
-        $this->setGen($gen);
-    }
+        $this->setGender(mt_rand(0,1));
 
-    public function createGen()
-    {
-
-        $gen['buy'] = $this->createChromosome();
-        $gen['sell'] = $this->createChromosome();
-
-        return $gen;
-    }
-
-    public function createChromosome()
-    {
-        $nodeNames = array(
-            "currency", "lip", "teeth", "jaw"
-        );
-
-        $chromosome = array();
-        foreach($nodeNames as $name) {
-
-            $nucloid = new stdClass();
-            $nucloid->name = 'last' . ucfirst($name);
-            $nucloid->min = $this->createGenValue();
-            $nucloid->max = $this->createGenValue();
-            $chromosome[] = $nucloid;
-            foreach($nodeNames as $second) {
-                if($second != $name) {
-                    $nucloid = new stdClass();
-                    $nucloid->name = $name . ucfirst($second);
-                    $nucloid->min = $this->createGenValue();
-                    $nucloid->max = $this->createGenValue();
-                    $chromosome[] = $nucloid;
-                }
+        // create weights
+        for($i = $this::VECTOR_SIZE;$i >= $this::OUTPUT_LAYER_SIZE; $i--) {
+            $j = 0;
+            while($j < $i) {
+                $this->_weights[$i][$j] = (mt_rand(-1000, 1000) / 1000);
+                $j++;
             }
         }
-        return $chromosome;
     }
 
 
-    public function createGenValue()
+    /**
+     * @return mixed
+     */
+    public function getPips()
     {
-        $dice = mt_rand(1, 3);
-        switch($dice) {
-            case 1:
-                $val = mt_rand(0, 999) / 1000;
-            break;
-            case 2:
-                $val = -1 * (mt_rand(0, 999) / 1000);
-            break;
-            case 3:
-                $val = null;
-            break;
-        }
-        return $val;
+        return $this->_pips;
     }
+
 
     /**
      * @param mixed $id
@@ -148,43 +180,113 @@ class Worm {
     }
 
     /**
-     * @return \Generation
+     * @return int id
      */
     public function getId()
     {
         return $this->_id;
     }
 
-    /**
-     * @param mixed $fitness
-     */
-    public function setFitness($fitness)
-    {
-        $this->_fitness = $fitness;
+    public function createVector($interval) {
+        $this->setInterval($interval[1]);
+        $vector = new Vector($interval);
+        $this->_vector = $vector->getValues();
+    }
+
+    public function getVector() {
+        return $this->_vector;
+    }
+
+    public function decide() {
+
+        $vector      = $this->getVector();
+
+        $decision = $this->calculateWeights($vector);
+        //echo $this->getId() . " " .$decision . "\n";
+
+        if($decision == 'BUY' && $this->getIn() == false) {
+            $this->setIn(true);
+            $interval = $this->getInterval();
+            $this->setOpenRate($interval['close']);
+
+        }
+
+        if($decision == 'SELL' && $this->getIn() == true) {
+            $this->setIn(false);
+            $interval = $this->getInterval();
+            $pips = $this->getOpenRate() - $interval['close'];
+            //echo "pips >>" .$this->_pips . " " . $pips .  " \n ";
+            $this->_pips = $this->_pips + $pips;
+        }
+    }
+
+    public function calculateWeights($vector) {
+        $weights     = $this->getWeights();
+        $hiddenLayers = array();
+        // go through the hidden ones
+        for($i = $this::VECTOR_SIZE;$i >= $this::OUTPUT_LAYER_SIZE; $i--) {
+            $weightLayer = $weights[$i];
+            foreach($weightLayer as $j =>$weight) {
+
+                // see doc;
+                $o_o    = 0;
+                $F      = 0;
+                foreach($vector as $k => $value) {
+                    $o_o =+ ($value * $weight);
+                    $F =+ abs($weight);
+                }
+
+                $o_o = round($o_o * 1000);
+                $F   = round($F * 1000);
+
+                // fix division by zero error
+                if($F != 0) {
+                    $O = ($o_o / $F);
+                }else $O = 0;
+
+                $hiddenLayers[$i][$j] = $O;
+            }
+            $vector = $hiddenLayers[$i];
+        }
+        $vector = current($vector);
+        if($vector > 0)  return "BUY";
+        if($vector == 0) return "NONE";
+        IF($vector < 0)  return "SELL";
+    }
+
+    public function cum() {
+        $weights = $this->getWeights();
+        $cum = array();
+        foreach($weights as $k => $weightLayer) {
+            $count = (floor(count($weightLayer) /2) );
+            if(mt_rand(0,1)) {
+                $cum[$k] = array_slice($weightLayer, $count, $count, true);
+            }else {
+                $cum[$k] = array_slice($weightLayer, 0, $count, true);
+            }
+
+        }
+        return $cum;
     }
 
     /**
-     * @return mixed
+     * @param $cum
+     * @param $id
+     * @internal param $idMale
+     * @internal param $id
+     * @return \Worm
      */
-    public function getFitness()
-    {
-        return $this->_fitness;
+    public function vagina($cum, $id) {
+
+        $worm = new Worm($id);
+        $weights = $this->getWeights();
+        foreach($weights as $k => $weightLayer) {
+             $egg[$k] = array_replace($weightLayer, $cum[$k]);
+        }
+
+        $worm->setWeights($egg);
+        return $worm;
     }
 
-    /**
-     * Go out and play
-     */
-    public function play() {
 
-        $market = $this->getMarket();
-
-        $clarc = new Clarc();
-
-        $clarc->infuse($this->getGen());
-        $market->setClarc($clarc);
-        $market->run();
-        $finalResult = $market->getCloseValue();
-        $this->setFitness($finalResult);
-        return $this;
-    }
 }

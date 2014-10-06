@@ -1,11 +1,15 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: thrynillan
  * Date: 8/18/14
  * Time: 12:30 PM
  */
-class ClarcInstrument {
+class ClarcInstrument
+{
+
+
     /**
      * @var
      */
@@ -25,6 +29,10 @@ class ClarcInstrument {
      */
     static protected $_instruments;
     static protected $_relations;
+    static protected $_highLow;
+
+    protected $_trendDelta;
+
 
     static public function create($name)
     {
@@ -37,17 +45,19 @@ class ClarcInstrument {
     static public function reset()
     {
         self::$_instruments = null;
-        self::$_relations   = null;
+        self::$_relations = null;
     }
 
-    public static function createRelations($new){
+    static public function createRelations($new)
+    {
 
         // create the relation instuments
         $instruments = self::getInstruments();
-        if(!empty($instruments)) {
-            foreach($instruments as $instrument) {
-                if($instrument->getName() != $new->getName()) {
+        if (!empty($instruments)) {
+            foreach ($instruments as $instrument) {
+                if ($instrument->getName() != $new->getName()) {
                     $relation = new self;
+                    $relation->setStep($instrument->getStep());
                     $relationName = $new->getName() . ucfirst($instrument->getName());
                     $relation->setName($relationName);
                     $rate = $new->getRate();
@@ -62,7 +72,7 @@ class ClarcInstrument {
     /**
      * @return mixed
      */
-    public static function getRelations()
+    static public function getRelations()
     {
         return self::$_relations;
     }
@@ -70,7 +80,7 @@ class ClarcInstrument {
     /**
      * @param mixed $relation
      */
-    public static function addRelation($relation)
+    static public function addRelation($relation)
     {
         self::$_relations[] = $relation;
     }
@@ -100,11 +110,128 @@ class ClarcInstrument {
     }
 
     /**
-     * @param mixed $child
+     * @return mixed
      */
-    public function addChild($child)
+    static public function getHighLow()
     {
-        $this->_children[] = $child;
+        return self::$_highLow;
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    static public function getHighLowByName($name)
+    {
+        if (!empty(self::$_highLow)) {
+            foreach (self::$_highLow as $i => $highlow) {
+                if ($name == $highlow->name) {
+                    $highlow->id = $i;
+                    return $highlow;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param $instrument
+     * @internal param mixed $high
+     */
+    static public function setHighLow($instrument)
+    {
+        $name = $instrument->getName();
+        $highLow = self::getHighLowByName($name);
+
+        // no highlow? create one
+        if (empty($highLow)) {
+            self::createHighLow($instrument);
+            return;
+        }
+
+        if (!$highLow->direction && $instrument->getRate() <= $highLow->breakout) {
+
+            // its not a new trend, continue
+            $highLow->newTrend = 0;
+            $highLow->breakout = $instrument->calculateBreakout();
+            self::addHighlow($highLow);
+            return;
+        }
+
+        if (!$highLow->direction && $instrument->getRate() > $highLow->breakout) {
+            //var_dump($instrument->getRate());
+            //var_dump($highLow->breakout);
+            //die();
+            self::createHighLow($instrument, $highLow);
+            return;
+        }
+
+        if ($highLow->direction && $instrument->getRate() >= $highLow->breakout) {
+
+
+            $highLow->newTrend = 0;
+            $highLow->breakout = $instrument->calculateBreakout();
+            self::addHighlow($highLow);
+            return;
+        }
+
+        if ($highLow->direction && $instrument->getRate() < $highLow->breakout) {
+            self::createHighLow($instrument, $highLow);
+            return;
+        }
+
+        echo "we have a breakout";
+        var_dump($instrument->getRate());
+        var_dump($highLow->breakout);
+        die();
+    }
+
+    /**
+     * @param $highLow
+     */
+    static public function addHighLow($highLow)
+    {
+        self::$_highLow[$highLow->id] = $highLow;
+    }
+
+    /**
+     * @param $instrument
+     * @param null $highLow
+     * @return null|stdClass
+     */
+    static public function createHighLow($instrument, $highLow = null)
+    {
+        if ($highLow == null) {
+            $highLow = new stdClass();
+            $highLow->id = count(self::getHighLow());
+        }
+        $highLow->newTrend = 1;
+        $highLow->name = $instrument->getName();
+        $highLow->rate = $instrument->getRate();
+        $highLow->step = $instrument->getStep();
+        $highLow->delta = $instrument->getDelta();
+
+        // trend apears up
+        if ($highLow->delta > 0) {
+            $highLow->direction = 1;
+        }
+
+        // trend apears down
+        if ($highLow->delta < 0) {
+            $highLow->direction = 0;
+        }
+        $highLow->breakout = $instrument->calculateBreakout();
+        self::addHighlow($highLow);
+        return $highLow;
+    }
+
+    /**
+     * @return float new breakout rate
+     */
+    public function calculateBreakout()
+    {
+        $newRate = $this->getRate() + ($this->getRate() * 0.0005);
+        return $newRate;
     }
 
     /**
@@ -144,7 +271,7 @@ class ClarcInstrument {
      */
     public function setInstruments($instruments)
     {
-        $this->_instruments = $instruments;
+        self::$_instruments = $instruments;
     }
 
     /**
@@ -156,13 +283,13 @@ class ClarcInstrument {
     }
 
     /**
-     * @param $first
-     * @param $last
+     * @param $rate
+     * @param $lastRate
      * @internal param mixed $delta
      */
-    public function setDelta($first, $last)
+    public function setDelta($rate, $lastRate)
     {
-        $this->_delta = ($last - $first) / $last;
+        $this->_delta = ($rate - $lastRate) / $rate;
     }
 
     /**
@@ -171,6 +298,23 @@ class ClarcInstrument {
     public function getDelta()
     {
         return $this->_delta;
+    }
+
+    /**
+     * Sets the long delta over the trend
+     */
+    public function setTrendDelta()
+    {
+        $highLow = self::getHighLowByName($this->getName());
+        $this->_trendDelta = $this->getRate() - $highLow->rate / $this->getRate();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTrendDelta()
+    {
+        return $this->_trendDelta;
     }
 
     /**
@@ -222,22 +366,6 @@ class ClarcInstrument {
     }
 
     /**
-     * @param mixed $trend
-     */
-    public function setTrend($trend)
-    {
-        $this->_trend = $trend;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTrend()
-    {
-        return $this->_trend;
-    }
-
-    /**
      * @param $trendLength
      * @internal param mixed $tendLength
      */
@@ -270,10 +398,16 @@ class ClarcInstrument {
         return $this->_name;
     }
 
+    /**
+     * Loads the rate for a trend tool trough moving avarage
+     *
+     * @param $step
+     * @return float|int
+     */
     public function loadData($step)
     {
 
-        if($step >= $this->getTrendLength() + $this->getOffset()) {
+        if ($step >= $this->getTrendLength() + $this->getOffset()) {
             $data = new DataHandler();
             $trend = $data->getTrend(
                 clarc::TRADING_CURRENCY_CODE,
