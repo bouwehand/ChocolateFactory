@@ -70,7 +70,7 @@ class JsonConfig
         $xpathArray = explode('/', $xpath);
         array_walk($xpathArray, array($this, '_xpath'));
         return $this->_xpath;
-    }
+    }  
 
     /**
      *
@@ -128,6 +128,25 @@ class JsonConfig
             throw new Exception('There is no systemconf to write');
         }
         file_put_contents(ROOT .'/'. $this::systemConfFileName, json_encode($this->_conf));
+    }
+
+    public function checkSystemConf()
+    {
+        return file_exists(ROOT .'/'. $this::systemConfFileName, json_encode($this->_conf));
+    }
+
+
+    /**
+     * Load special and sensitive specs only in the sysConf
+     * 
+     * @param $xpath
+     * @return null
+     */
+    public function getSysConf($xpath)
+    {
+        $fullPath = ROOT .'/'. $this::systemConfFileName;
+        $this->_conf = json_decode(file_get_contents($fullPath));
+        return $this->getConf($xpath);
     }
 
     /**

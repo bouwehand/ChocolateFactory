@@ -11,11 +11,6 @@ class Query {
     /**
      * @var string
      */
-    protected static $_dsn = 'mysql:dbname=ecb;host=127.0.0.1';
-
-    protected static $_user = 'root';
-
-    protected static $_password = 'chaos';
 
     protected $_table = 'table';
 
@@ -25,12 +20,48 @@ class Query {
     protected $_pdo;
 
     /**
+     * mysql:dbname=<databasename>;host=localhost
+     * 
+     * @return string dsn config
+     * 
+     */
+    public static function getDsn()
+    {
+        $jsonConfig = JsonConfig::getInstance();
+        return $jsonConfig->getSysConf('core/query/dsn');
+    }
+
+    /**
+     * ex. root
+     *
+     * @return string user config
+     *
+     */
+    public static function getUser()
+    {
+        $jsonConfig = JsonConfig::getInstance();
+        return $jsonConfig->getSysConf('core/query/user');
+    }
+
+    /**
+     * ex. password
+     *
+     * @return string user config
+     *
+     */
+    public static function getPassword()
+    {
+        $jsonConfig = JsonConfig::getInstance();
+        return $jsonConfig->getSysConf('core/query/password');
+    }
+    
+    /**
      * Initialize the PDO wrapper
      */
     private function __construct()
     {
         try {
-            $this->_pdo =  new PDO(Query::$_dsn, Query::$_user, Query::$_password);
+            $this->_pdo =  new PDO(Query::getDsn(), Query::getUser(), Query::getPassword());
         } catch (PDOException $e) {
             echo 'Connection failed: ' . $e->getMessage() . " \n\n";
             die();

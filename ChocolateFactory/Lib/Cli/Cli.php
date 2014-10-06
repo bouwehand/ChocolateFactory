@@ -7,7 +7,6 @@
  */
 class Cli{
 
-
     /**
      * Run a cli script 
      * 

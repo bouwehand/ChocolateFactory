@@ -1,3 +1,8 @@
 {
-    "module" : "core"
+    "module" : "core",
+    "query" : {
+        "dsn" : "mysql:dbname=<databasename>;host=localhost",
+        "user" : "root", 
+        "password": "password"
+    }
 }
