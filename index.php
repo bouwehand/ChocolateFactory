@@ -31,10 +31,12 @@ define('CHOCOLATE_FACTORY_LIB', CHOCOLATE_FACTORY . '/Lib');
 
 define('APP_LIB', ROOT . '/Lib');
 
+
+
 require_once(CHOCOLATE_FACTORY .'/ChocolateFactory.php');
 $chocolateFactory = new ChocolateFactory();
 try {
     $chocolateFactory->run();
 } catch (Exception $e) {
-    throw $e;
+    Logger::error($e->getMessage());
 }

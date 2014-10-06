@@ -21,7 +21,7 @@ class ChocolateFactory {
         $jsonConfig = JsonConfig::getInstance();
         $jsonConfig->loadDir(CHOCOLATE_FACTORY_LIB);
         $jsonConfig->loadDir(APP_LIB);
-        if(!$jsonConfig->checkSystemConf()) {
+        if (!($jsonConfig->checkSystemConf())) {
             $jsonConfig->writeSystemConf();    
         }
 

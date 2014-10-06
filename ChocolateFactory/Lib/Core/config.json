@@ -4,5 +4,8 @@
         "dsn" : "mysql:dbname=<databasename>;host=localhost",
         "user" : "root", 
         "password": "password"
+    },
+    "logger" : {
+        "errorlog" : "/log/error.log"
     }
 }

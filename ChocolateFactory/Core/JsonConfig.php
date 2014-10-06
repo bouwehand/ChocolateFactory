@@ -132,7 +132,7 @@ class JsonConfig
 
     public function checkSystemConf()
     {
-        return file_exists(ROOT .'/'. $this::systemConfFileName, json_encode($this->_conf));
+        return file_exists(ROOT .'/'. $this::systemConfFileName);
     }
 
 
