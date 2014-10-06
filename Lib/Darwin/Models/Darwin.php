@@ -12,7 +12,11 @@ class Darwin {
      */
     public static function run() {
         
-        echo "\n\n DARWIN OPERATIONAL \n\n";
-        echo " One who peers into nature must have a hart of stone \n\n";
+        echo "\n\n               DARWIN OPERATIONAL                \n\n";
+        echo " One who peers into nature must have a hart of stone \n\n";    
+        
+        $world = new World();
+        $world->run();
     }
 }
+

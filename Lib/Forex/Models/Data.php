@@ -5,7 +5,7 @@
  * Date: 4/19/14
  * Time: 5:26 PM
  */
-class Data{
+class Data {
 
     /**
      *

@@ -150,6 +150,12 @@ class World{
         return $return;
     }
 
+    /**
+     * It's how people meet
+     * 
+     * @param $worms
+     * @return array
+     */
     public function tinder($worms) {
         $pares = $this->paardCafe($worms);
         $worms = $this->bedRoom($pares);

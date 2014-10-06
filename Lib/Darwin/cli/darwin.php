@@ -9,5 +9,3 @@
 
 Darwin::run();
 
-$world = new World();
-$world->run();

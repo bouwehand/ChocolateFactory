@@ -32,7 +32,8 @@ class Query {
         try {
             $this->_pdo =  new PDO(Query::$_dsn, Query::$_user, Query::$_password);
         } catch (PDOException $e) {
-            echo 'Connection failed: ' . $e->getMessage();
+            echo 'Connection failed: ' . $e->getMessage() . " \n\n";
+            die();
         }
         $this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $this->_instance = $this;

@@ -8,7 +8,11 @@
 class Cli{
 
 
-
+    /**
+     * Run a cli script 
+     * 
+     * @throws Exception
+     */
     public function run() {
         $options = getopt('s:');
         if(!isset($options['s'])) {

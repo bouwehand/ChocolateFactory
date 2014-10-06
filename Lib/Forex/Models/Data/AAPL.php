@@ -5,7 +5,8 @@
  * Date: 4/19/14
  * Time: 5:26 PM
  */
-class AAPL extends Data{
+require_once(APP_LIB . '/Forex/Models/Data.php');
+class AAPL extends Data {
 
     public function __construct() {
         $this->setTableName('AAPL_historical');
