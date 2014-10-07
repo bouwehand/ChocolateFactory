@@ -24,7 +24,7 @@ class ChocolateFactory {
         if (!($jsonConfig->checkSystemConf())) {
             $jsonConfig->writeSystemConf();    
         }
-
+        
         //load class library
         $this->_loadClasses(CHOCOLATE_FACTORY_LIB);
         $this->_loadClasses(APP_LIB);
@@ -51,16 +51,18 @@ class ChocolateFactory {
      * @param  $dirAddress
      * @return true;
      */
-    protected function _loadClasses($dirAddress){
+    protected function _loadClasses($dirAddress, $classList = array()){
         if ($handle = opendir($dirAddress)) {
             while (false !== ($entry = readdir($handle))) {
                 if ($entry != "." && $entry != ".." ) {
 
                     if(preg_match("/^[A-Z][a-zA-Z0-9]+$/", $entry) && is_dir($dirAddress . '/' . $entry)) {
-                        $this->_loadClasses($dirAddress. '/' . $entry);
+                        $this->_loadClasses($dirAddress. '/' . $entry, $classList);
                     }
 
                     if(preg_match("/^[A-Z][a-zA-Z0-9]+\.php$/", $entry)){
+                        
+                        //$classList[] =$dirAddress. '/' . $entry;
                         require_once($dirAddress. '/' . $entry);
                     }
 
@@ -69,6 +71,8 @@ class ChocolateFactory {
             closedir($handle);
         }
 
+        //var_dump($classList);
+        
         return true;
     }
 }
