@@ -18,6 +18,6 @@ class Yahoo_Model_Import {
         $json = $yahoo->getQuotes('EFSI');
         $quotes = json_decode($json);
         
-        die(var_dump($quotes->query->results->quote));
+        die(var_dump($quotes->query->results));
     }
 }

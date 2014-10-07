@@ -13,7 +13,6 @@ class Yahoo_Model_ImportHistorical {
         $endDate = new DateTime("2010-12-30");
         $data = $yahoo->getHistoricalData('GOOGL', $startDate, $endDate);
         $quotes = json_decode($data);
-
         die(var_dump($quotes->query->results));
     }
     
