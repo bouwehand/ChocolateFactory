@@ -353,6 +353,7 @@ class Query {
      * @param bool $verbose
      * @return mixed
      */
+
     public function fetchOne($sql = null, $verbose  = false) {
         $sth = $this->_query($sql, $verbose);
         $result = $sth->fetch();

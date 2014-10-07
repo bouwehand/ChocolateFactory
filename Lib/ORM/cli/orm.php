@@ -14,3 +14,4 @@ $result = $query
     ->join('yahoo', "volume = volume")
     ->fetchOne();
 var_dump($result);
+
