@@ -7,18 +7,50 @@
  */ 
 class ORM_Model_Abstract
 {
+    protected $_data;
+
+    /**
+     * @param array $data
+     * @return $this
+     */
+    public function setData(Array $data)
+    {
+        $this->_data = $data;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->_data;
+    }
+
     /**
      * @param  $key
      * @param  $value
      * @return void
      */
     public function setValue($key, $value) {
-        $method = "set" . $key;
+        $method = "set" . ucfirst($key);
         if (method_exists($this, $method)) {
             $this->$method($value);
-        } else if(method_exists($this, "set" . preg_replace("/^o_/","",$key))) {
-  
-            $this->$method($value);
+        }
+        return $this;
+    }
+
+    public function __call($functionName, $arguments) {
+
+        $functionType = substr($functionName, 0,3);
+
+        switch($functionType) {
+            case "set" :
+                $name = strtolower(substr($functionName, 3));
+                $this->_data->$name = current($arguments);;
+                break;
+            case "get" :
+                break;
         }
         return $this;
     }

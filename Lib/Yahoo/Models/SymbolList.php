@@ -5,7 +5,7 @@
  * Date: 10/7/14
  * Time: 4:14 PM
  */ 
-class Yahoo_Model_SymbolList 
+class Yahoo_Model_SymbolList extends ORM_Model
 {
     
 }

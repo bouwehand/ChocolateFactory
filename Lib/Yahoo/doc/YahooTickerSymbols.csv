@@ -1,4 +1,4 @@
-TickerSymbol,Name,Exchange,Category Name,Country,Category Number
+symbol,name,exchange,category,country,category_number
 000019.SZ,SBSY,SHZ,,China,0
 000029.SZ,SPG,SHZ,,China,0
 000060.SZ,NONFEMET,SHZ,,China,0

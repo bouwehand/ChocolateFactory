@@ -7,5 +7,7 @@
  */ 
 class ORM_Model extends ORM_Model_Abstract
 {
+
+    
     
 }

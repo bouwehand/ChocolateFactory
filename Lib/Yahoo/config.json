@@ -2,6 +2,7 @@
     "module"  : "Yahoo",
     "cli" : {
         "yahoo" : "yahoo.php",
-        "yahoo_historical" : "yahoo_historical.php"
+        "yahoo_historical" : "yahoo_historical.php",
+        "symbol_list" : "symbolList.php"
      }
 }
