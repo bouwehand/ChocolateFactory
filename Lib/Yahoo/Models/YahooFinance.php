@@ -13,6 +13,9 @@ class YahooFinance {
     );
     private $format;
 
+    /**
+     * @param string $format
+     */
     public function __construct($format='json') {
         if (isset($format)) {
             switch ($format) {
@@ -23,6 +26,12 @@ class YahooFinance {
         }
     }
 
+    /**
+     * @param $symbol
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
     public function getHistoricalData($symbol, $startDate, $endDate) {
         if (is_object($startDate) && get_class($startDate) == 'DateTime') {
             $startDate = $this->dateToDBString($startDate);
@@ -33,10 +42,14 @@ class YahooFinance {
 
         $options = $this->options;
         $options['q'] = "select * from yahoo.finance.historicaldata where startDate='{$startDate}' and endDate='{$endDate}' and symbol='{$symbol}'";
-
+    
         return $this->execQuery($options);
     }
 
+    /**
+     * @param $symbols
+     * @return mixed
+     */
     public function getQuotes($symbols) {
         if (is_string($symbols)) {
             $symbols = array($symbols);
@@ -48,6 +61,10 @@ class YahooFinance {
         return $this->execQuery($options);
     }
 
+    /**
+     * @param $symbols
+     * @return mixed
+     */
     public function getQuotesList($symbols) {
         if (is_string($symbols)) {
             $symbols = array($symbols);
@@ -59,6 +76,10 @@ class YahooFinance {
         return $this->execQuery($options);
     }
 
+    /**
+     * @param $options
+     * @return mixed
+     */
     private function execQuery($options) {
         $yql_query_url = $this->getUrl($options);
         $session = curl_init($yql_query_url);
@@ -66,6 +87,10 @@ class YahooFinance {
         return curl_exec($session);
     }
 
+    /**
+     * @param $options
+     * @return string
+     */
     private function getUrl($options) {
         $url = $this->yqlUrl;
         $i=0;
