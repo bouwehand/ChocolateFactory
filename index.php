@@ -38,5 +38,6 @@ $chocolateFactory = new ChocolateFactory();
 try {
     $chocolateFactory->run();
 } catch (Exception $e) {
-    Logger::error($e->getMessage());
+    Logger::error($e->getMessage() . "\n" . $e->getTraceAsString());
+    die(" You have errors. Check error log \n\n");
 }

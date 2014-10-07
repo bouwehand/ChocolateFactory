@@ -17,7 +17,7 @@ class Yahoo_Model_Import {
         $yahoo = new YahooFinance();
         $json = $yahoo->getQuotes('EFSI');
         $quotes = json_decode($json);
-
+        
         die(var_dump($quotes->query->results->quote));
     }
 }

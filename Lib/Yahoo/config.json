@@ -2,6 +2,6 @@
     "module"  : "Yahoo",
     "cli" : {
         "yahoo" : "yahoo.php",
-        "yahoo" : "yahoo_historical"
+        "yahoo_historical" : "yahoo_historical.php"
      }
 }

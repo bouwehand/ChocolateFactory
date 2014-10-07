@@ -24,7 +24,12 @@ class Cli{
         foreach($cliList as $config) {
             $cli = $config->cli;
             if(isset($cli->$scriptName)) {
-                include_once(ROOT. '/Lib/' . $config->module . '/cli/' . $config->cli->$scriptName);
+                $scriptPath = ROOT. '/Lib/' . $config->module . '/cli/' . $config->cli->$scriptName;
+                if(!file_exists($scriptPath) ) {
+                    throw new Exception('in config ' . $config->module . ' cant find: ' . $scriptPath . "\n" );
+                }
+                echo "Chocolate Factory run $scriptPath \n\n";
+                include_once($scriptPath);
                 die();
             }
         }
