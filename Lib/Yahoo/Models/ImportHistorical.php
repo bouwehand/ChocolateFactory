@@ -5,7 +5,7 @@
  * Date: 10/7/14
  * Time: 3:58 PM
  */ 
-class Yahoo_Import_Model_Historical {
+class Yahoo_Model_ImportHistorical {
     
     public function run() {
         $yahoo = new YahooFinance();

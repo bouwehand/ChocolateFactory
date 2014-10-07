@@ -5,6 +5,6 @@
  * Date: 10/7/14
  * Time: 3:59 PM
  */ 
-class Yahoo_Model_Quote_historical {
+class Yahoo_Model_QuoteHistorical {
     
 }
