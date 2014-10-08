@@ -43,13 +43,14 @@ class ORM_Model_Abstract
     public function __call($functionName, $arguments) {
 
         $functionType = substr($functionName, 0,3);
-
+        $name = strtolower(substr($functionName, 3));
         switch($functionType) {
             case "set" :
-                $name = strtolower(substr($functionName, 3));
+               
                 $this->_data->$name = current($arguments);;
                 break;
             case "get" :
+                return $this->_data->$name;
                 break;
         }
         return $this;

@@ -15,20 +15,8 @@ class ChocolateFactory {
     public function run() {
 
         // load the core
-        $this->_loadClasses(CHOCOLATE_FACTORY_CORE);
-
-        //load configs
-        $jsonConfig = JsonConfig::getInstance();
-        $jsonConfig->loadDir(CHOCOLATE_FACTORY_LIB);
-        $jsonConfig->loadDir(APP_LIB);
-        if (!($jsonConfig->checkSystemConf())) {
-            $jsonConfig->writeSystemConf();    
-        }
-        
-        //load class library
-        $this->_loadClasses(CHOCOLATE_FACTORY_LIB);
-        $this->_loadClasses(APP_LIB);
-
+        $this->_loadCore();
+      
         // Run the mvc web framework if we are in the browser
         // else run the cli version of the framework
         if(php_sapi_name() == 'cli') {
@@ -40,39 +28,21 @@ class ChocolateFactory {
             $mvc->run();
         }
     }
-
-    /**
-     * LoadClasses
-     *
-     * loads all the classes in a given directory
-     * Dirs that start with a capital are autoloaded
-     *
-     *
-     * @param  $dirAddress
-     * @return true;
-     */
-    protected function _loadClasses($dirAddress, $classList = array()){
-        if ($handle = opendir($dirAddress)) {
-            while (false !== ($entry = readdir($handle))) {
-                if ($entry != "." && $entry != ".." ) {
-
-                    if(preg_match("/^[A-Z][a-zA-Z0-9]+$/", $entry) && is_dir($dirAddress . '/' . $entry)) {
-                        $this->_loadClasses($dirAddress. '/' . $entry, $classList);
-                    }
-
-                    if(preg_match("/^[A-Z][a-zA-Z0-9]+\.php$/", $entry)){
-                        
-                        //$classList[] =$dirAddress. '/' . $entry;
-                        require_once($dirAddress. '/' . $entry);
-                    }
-
-                }
-            }
-            closedir($handle);
-        }
-
-        //var_dump($classList);
+    
+    /** Load Core functionality */
+    private function _loadCore() {
         
-        return true;
-    }
+        //load configs
+        require_once(CHOCOLATE_FACTORY_CORE . '/JsonConfig.php');
+        $jsonConfig = JsonConfig::getInstance();
+        $jsonConfig->loadDir(CHOCOLATE_FACTORY_LIB);
+        $jsonConfig->loadDir(APP_LIB);
+        if (!($jsonConfig->checkSystemConf())) {
+            $jsonConfig->writeSystemConf();
+        }
+        
+        //load classes
+        require_once(CHOCOLATE_FACTORY_CORE . '/ClassLoader.php');
+        spl_autoload_register('ClassLoader::autoload');
+    } 
 }

@@ -83,11 +83,7 @@ class Query {
         return Query::$instance;
     }
 
-    public function truncate($table) {
 
-        $sql = " TRUNCATE TABLE $table";
-        return $this->_pdo->exec($sql);
-    }
 
     public function setTable($table) {
         $this->_table = $table;
