@@ -10,15 +10,81 @@ class World{
     const TIME_THE_WORLD_STARTS  = 2;
     const TIME_OF_THE_WORLD = 1000;
 
-    const GENERATION_SIZE = 10;
+    const GENERATION_SIZE = 15;
 
-    const NUMBER_GENERATIONS = 100;
+    const NUMBER_GENERATIONS = 1000;
 
     protected $_time = 2;
 
     protected $_genN = 0;
 
     protected $_worms = array();
+
+    /**
+     * The last best worm
+     *
+     * @var worm object
+     */
+    protected $_oldKing;
+
+    /**
+     * The last best worm
+     *
+     * @var worm object
+     */
+    protected $_oldQueen;
+
+    /**
+     * Set the king if score is higher
+     *
+     * @param $newKing
+     * @return bool
+     * @internal param \worm $oldKing
+     */
+    public function setOldKing(Worm $newKing)
+    {
+        if(is_null($this->_oldKing)) {
+            $this->_oldKing = $newKing;
+        }
+
+        if($newKing->getPips() > $this->_oldKing->getPips()){
+            $this->_oldKing = $newKing;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return \worm
+     */
+    public function getOldKing()
+    {
+        return $this->_oldKing;
+    }
+
+    /**
+     * Set the king if score is higher
+     *
+     * @param $newKing
+     * @internal param \worm $oldKing
+     */
+    public function setOldQueen($newQueen)
+    {
+        if(is_object($newQueen)) {
+            $this->_oldQueen = $newQueen;
+        }
+
+    }
+
+    /**
+     * @return \worm
+     */
+    public function getOldQueen()
+    {
+        return $this->_oldQueen;
+    }
+
+
 
     public function timer () {
         return $this->_time++;
@@ -91,12 +157,19 @@ class World{
     public function run() {
         $worms = $this->getWorms();
         while($this->getGenN() < $this::NUMBER_GENERATIONS) {
-            echo ">> generation " .$this->getGenN() . " \n";
+            echo "\n\n >> generation " .$this->getGenN() . " \n\n";
+            echo "send into the world \n";
             $worms = $this->getRich($worms);
+            echo "starve the meak \n";
             $worms = $this->starveWorms($worms);
-            $worms = $this->tinder($worms);
+            echo "select the fitest \n";
+            $worms = $this->selectFittest($worms);
+            echo "\n King is : ".$this->getOldKing()->getPips(). " \n\t" .serialize($this->getOldKing()->getWeights());
+            echo "\n Queen is : ".$this->getOldQueen()->getPips(). " \n\t" .serialize($this->getOldQueen()->getWeights());
             $worms = $this->addMutants($worms);
+            echo "set the new generation \n";
             $this->setWorms($worms);
+            echo "again and again \n";
             $this->genTimer();
         }
     }
@@ -116,7 +189,7 @@ class World{
         // close all positions
         foreach ($worms as $worm) {
             $worm->setIn(false);
-            echo $worm->getId() . " ". $worm->getPips() . " \n";
+            echo "closed: ". $worm->getId() . " ". $worm->getPips() . " \n";
         }
 
         return $worms;
@@ -151,18 +224,6 @@ class World{
     }
 
     /**
-     * It's how people meet
-     * 
-     * @param $worms
-     * @return array
-     */
-    public function tinder($worms) {
-        $pares = $this->paardCafe($worms);
-        $worms = $this->bedRoom($pares);
-        return $worms;
-    }
-
-    /**
      * Order females by titSize
      * Order males by dickSize
      * select next generation
@@ -171,54 +232,46 @@ class World{
      * @throws Exception
      * @return array $worms
      */
-    public function paardCafe($worms) {
-        $return = array();
-        $females = $this->selectGender($worms, 0);
-        $males   = $this->selectGender($worms, 1);
+    public function selectFittest($worms) {
 
-        if(count($females) == 0) {
-            //throw new Exception('cockfest at the party');
+        $worms = $this->orderByFitness($worms);
 
-            echo "\n cockfest, doing the gay-out \n";
-            // the gay-out
-            $females = $males;
+        // pair the best
+        $promKing = current($worms);
+        $promQueen = next($worms);
+
+        if(!$this->setOldKing($promKing)) {
+            $this->setOldQueen(current($worms));
         }
 
-        // the woman chooses
-        foreach($females as $titSize => $female) {
-            if(count($males) > 0) {
-                foreach($males as $dickSize => $male) {
-                    $return[$male->getId()] = $female->getId();
-                    echo $titSize . " " . $dickSize . " \n";
-                    unset($males[$dickSize]);
-                    continue;
-                }
-            }
-        }
-        return $return;
+        $worms = $this->bedRoom($promKing, $promQueen);
+        return $worms;
     }
 
-    public function bedRoom($pares) {
+    /**
+     * @param $promKing
+     * @param $promQueen
+     * @return array
+     */
+    public function bedRoom($promKing, $promQueen) {
         $newWorms = array();
         $i = 0;
-        $pSize = floor($this::GENERATION_SIZE * 0.7);
+        //$pSize = floor($this::GENERATION_SIZE * 0.7);
+        $pSize = $this::GENERATION_SIZE;
 
         while($i < $this::GENERATION_SIZE) {
-            $newId = $this->getGenN() . "_" . uniqid();
-            foreach($pares as $maleId => $femaleId) {
-                $female     = $this->getWorm($femaleId);
-                $male       = $this->getWorm($maleId);
-                $cum        = $male->cum();
-                $newWorms[$newId] = $female->vagina($cum, $newId);
-
+                $cum        = $promKing->cum();
+                if(!is_object($promQueen)) {
+                    //$promQueen = $this->getOldKing();
+                    $promQueen = $this->getOldQueen();
+                }
+                $newWorm = $promQueen->vagina($cum);
+                $newWorms[$newWorm->getId()] = $newWorm;
                 if(count($newWorms) == $pSize) {
                     return $newWorms;
                 }
-            }
-
             $i++;
         }
-        $this->setWorms($newWorms);
         return $newWorms;
     }
 
@@ -229,13 +282,18 @@ class World{
         return $worms;
     }
 
-    public function selectGender($worms, $gender) {
+    /**
+     * Returns sorted array of worms ordered by fitness scores
+     *
+     * @param $worms
+     * @return array
+     */
+    public function orderByFitness($worms) {
         $return = array();
+
         foreach($worms as $worm) {
-            if($worm->getGender() == $gender) {
-                $pips = (int) (round($worm->getPips(), 2) * 100);
-                $return[$pips] = $worm;
-            }
+            $pips = (int) (round($worm->getPips(), 2) * 100);
+            $return[$pips ] = $worm;
             krsort($return);
         }
         return $return;
@@ -259,8 +317,8 @@ class World{
         // create new worms
         $i = 0;
         while($i < ($size - count($fittestWorms))) {
-            $newId = $this->getGenN() . "_" . uniqid();
-            $generation[$newId] = new Worm($newId);
+            $worm = new Worm();
+            $generation[$worm->getId()] = $worm;
             $i++;
         }
         return $generation;

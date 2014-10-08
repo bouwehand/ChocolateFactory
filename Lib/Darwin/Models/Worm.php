@@ -44,6 +44,8 @@ class Worm {
 
     protected $_in = false;
 
+
+
     /**
      * @param array $hiddenLayer
      */
@@ -144,11 +146,10 @@ class Worm {
 
 
     /**
-     * @param $id Generation id
+     * @internal param \Generation $id id
      */
-    function __construct($id) {
-
-        $this->setId($id);
+    function __construct() {
+        $this->setId(uniqid());
         $this->setGender(mt_rand(0,1));
 
         // create weights
@@ -271,14 +272,14 @@ class Worm {
 
     /**
      * @param $cum
-     * @param $id
+     * @internal param $id
      * @internal param $idMale
      * @internal param $id
      * @return \Worm
      */
-    public function vagina($cum, $id) {
+    public function vagina($cum) {
 
-        $worm = new Worm($id);
+        $worm = new Worm();
         $weights = $this->getWeights();
         foreach($weights as $k => $weightLayer) {
              $egg[$k] = array_replace($weightLayer, $cum[$k]);

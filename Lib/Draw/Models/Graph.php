@@ -34,6 +34,8 @@ class Graph{
 
     protected $_lines = array();
 
+    protected $_opens = array();
+    protected $_closes = array();
     /**
      * @param mixed $yAxisEnd
      */
@@ -357,6 +359,12 @@ class Graph{
             if($lasLinePoint) {
                 $xx = ((($lasLinePoint->step - $xAxisStart) / $xAxisInterval ) * $gridSizeX) + $this->getTextWidth() + $this->getPadding();
                 $xy = ((($lasLinePoint->rate - $yAxisStart) / $yAxisInterval ) * $gridSizeY) + $this->getTextHeight() + $this->getPadding();
+                if(isset($this->_opens[$xx])) {
+                    $this->drawText(13, 90 , $xx, $xy, '000000', 'open');
+                }
+                if(isset($this->_closes[$xx])) {
+                    $this->drawText(13, 90 , $xx, $xy, '000000', 'close');
+                }
 
                 $yx = ((($linePoint->step - $xAxisStart) / $xAxisInterval ) * $gridSizeX) + $this->getTextWidth() + $this->getPadding();
                 $yy = ((($linePoint->rate - $yAxisStart) / $yAxisInterval ) * $gridSizeY) + $this->getTextHeight() + $this->getPadding();
@@ -489,8 +497,21 @@ class Graph{
         return $this;
     }
 
+    public function drawText( $fontSize, $angle, $x , $y , $colorHex, $text) {
+        $png = $this->getPNG();
+        $png->drawText( $fontSize, $angle, $x , $y , $colorHex, $text);
+    }
+
     public function addLine($lines) {
         $this->_lines[] = $lines;
+    }
+
+    public function addOpen($open) {
+        $this->_opens[$open] = $open;
+    }
+
+    public function addClose($close) {
+        $this->_closes[$close] = $close;
     }
 
     /**

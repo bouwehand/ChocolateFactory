@@ -15,8 +15,11 @@ class Darwin {
         echo "\n\n               DARWIN OPERATIONAL                \n\n";
         echo " One who peers into nature must have a hart of stone \n\n";    
         
-        $world = new World();
-        $world->run();
+        //$world = new World();
+        //$world->run();
+
+        $performace = new Peformace();
+        $performace->run();
     }
 }
 
