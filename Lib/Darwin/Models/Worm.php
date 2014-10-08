@@ -20,6 +20,10 @@ class Worm {
     const VECTOR_SIZE = 10;
     const OUTPUT_LAYER_SIZE = 1;
 
+    const POS_BUY  = 'BUY';
+    const POS_SELL = 'SELL';
+    const POS_NONE = 'NONE';
+
     /**
      * @var
      */
@@ -38,13 +42,31 @@ class Worm {
 
     protected $_interval;
 
-    protected $_openRate;
+    protected $_openedPositionRate;
 
     protected $_pips = 0;
 
-    protected $_in = false;
+    protected $_in = 0;
 
+    protected $_openedPosition = 0;
 
+    protected $_closedPosition = 0;
+
+    /**
+     * @return boolean
+     */
+    public function getClosedPosition()
+    {
+        return $this->_closedPosition;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getOpendPosition()
+    {
+        return $this->_openedPosition;
+    }
 
     /**
      * @param array $hiddenLayer
@@ -83,7 +105,7 @@ class Worm {
      */
     public function setOpenRate($openRate)
     {
-        $this->_openRate = $openRate;
+        $this->_openedPositionRate = $openRate;
     }
 
     /**
@@ -91,7 +113,7 @@ class Worm {
      */
     public function getOpenRate()
     {
-        return $this->_openRate;
+        return $this->_openedPositionRate;
     }
 
 
@@ -198,27 +220,50 @@ class Worm {
         return $this->_vector;
     }
 
+    /**
+     *
+     */
     public function decide() {
 
-        $vector      = $this->getVector();
-
+        $vector   = $this->getVector();
         $decision = $this->calculateWeights($vector);
-        //echo $this->getId() . " " .$decision . "\n";
+        $this->handleAccount($decision);
+    }
 
-        if($decision == 'BUY' && $this->getIn() == false) {
-            $this->setIn(true);
-            $interval = $this->getInterval();
-            $this->setOpenRate($interval['close']);
+    public function handleAccount($decision) {
+        $in = $this->getIn();
 
+        switch($decision) {
+            case $this::POS_BUY :
+                if($in == 0) {
+                    $this->_in    = 1;
+                    $this->_openedPosition  = 1;
+                    $this->_closedPosition = 0;
+                    $interval = $this->getInterval();
+                    $this->setOpenRate($interval['close']);
+                } else {
+                    $this->_openedPosition  = 0;
+                    $this->_closedPosition = 0;
+                }
+                break;
+            case $this::POS_SELL :
+                if($in == 1) {
+                    $this->_in    = 0;
+                    $this->_openedPosition = 0;
+                    $this->_closedPosition = 1;
+                    $interval = $this->getInterval();
+                    $pips = $this->getOpenRate() - $interval['close'];
+                    $this->_pips = $this->_pips + $pips;
+                }else {
+                    $this->_openedPosition  = 0;
+                    $this->_closedPosition = 0;
+                }
+                break;
+            default :
+                $this->_openedPosition  = 0;
+                $this->_closedPosition = 0;
         }
-
-        if($decision == 'SELL' && $this->getIn() == true) {
-            $this->setIn(false);
-            $interval = $this->getInterval();
-            $pips = $this->getOpenRate() - $interval['close'];
-            //echo "pips >>" .$this->_pips . " " . $pips .  " \n ";
-            $this->_pips = $this->_pips + $pips;
-        }
+        //echo $decision . "\t Open: " . $this->getOpen() . " Close :" . $this->getClosedPosition() . " In: " . $this->getIn() . "\n";
     }
 
     public function calculateWeights($vector) {
@@ -250,9 +295,9 @@ class Worm {
             $vector = $hiddenLayers[$i];
         }
         $vector = current($vector);
-        if($vector > 0)  return "BUY";
-        if($vector == 0) return "NONE";
-        IF($vector < 0)  return "SELL";
+        if($vector > 0)  return $this::POS_BUY;
+        if($vector == 0) return $this::POS_NONE;
+        IF($vector < 0)  return $this::POS_SELL;
     }
 
     public function cum() {

@@ -5,12 +5,16 @@
  * Date: 8/21/14
  * Time: 2:15 PM
  */
-$first = 100;
-$last = 800;
+$first = 2;
+$last = 1000;
+$min = 11.1200;
+$max = 63.2500;
 
-$dataHandler = new AAPL();
-$max = $dataHandler->getMax($first, $last);
-$min = $dataHandler->getMin($first, $last);
+//$dataHandler = new AAPL();
+$dataHandler = new Performace();
+//$max = $dataHandler->getMax($first, $last);
+//$min = $dataHandler->getMin($first, $last);
+
 $Yinterval = ($max - $min) / 20;
 $Xinterval = ($last - $first) / 60;
 
@@ -19,7 +23,7 @@ $graph = new Graph();
 $graph->setXaxis($first, $last, $Xinterval);
 $graph->setYaxis($min, $max, $Yinterval);
 //
-$dataSet = $dataHandler->getInterval($first, $last);
+$dataSet = $dataHandler->run();
 foreach($dataSet as $marketData) {
         $line = new stdClass();
         $line->step = $marketData['id'];
@@ -27,12 +31,11 @@ foreach($dataSet as $marketData) {
         $lines['name'] = 'rate';
         $lines['color'] = '000000';
         $lines['data'][] = $line;
-
-        if($marketData['open'] == true) {
+        if($marketData['opendPosition'] == 1) {
             $graph->addOpen($marketData['id']);
         }
 
-        if($marketData['close'] == true) {
+        if($marketData['closedPosition'] == 1) {
             $graph->addClose($marketData['id']);
         }
 

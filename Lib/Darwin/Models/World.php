@@ -5,20 +5,24 @@
  * Date: 8/15/14
  * Time: 5:11 PM
  */
-class World{
+class World {
 
     const TIME_THE_WORLD_STARTS  = 2;
     const TIME_OF_THE_WORLD = 1000;
 
-    const GENERATION_SIZE = 15;
+    const GENERATION_SIZE = 10;
 
-    const NUMBER_GENERATIONS = 1000;
+    const NUMBER_GENERATIONS = 10;
 
     protected $_time = 2;
 
     protected $_genN = 0;
 
     protected $_worms = array();
+
+    protected $_dataFeed;
+
+
 
     /**
      * The last best worm
@@ -33,6 +37,23 @@ class World{
      * @var worm object
      */
     protected $_oldQueen;
+
+    /**
+     * @param mixed $dataFeed
+     */
+    public function setDataFeed($dataFeed)
+    {
+        $this->_dataFeed = $dataFeed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataFeed()
+    {
+        return $this->_dataFeed;
+    }
+
 
     /**
      * Set the king if score is higher
@@ -155,30 +176,30 @@ class World{
     }
 
     public function run() {
+
+        // initialize datafeed
+        $dataFeed = new AAPL();
+        $this->setDataFeed($dataFeed);
+
         $worms = $this->getWorms();
         while($this->getGenN() < $this::NUMBER_GENERATIONS) {
             echo "\n\n >> generation " .$this->getGenN() . " \n\n";
-            echo "send into the world \n";
             $worms = $this->getRich($worms);
-            echo "starve the meak \n";
             $worms = $this->starveWorms($worms);
-            echo "select the fitest \n";
             $worms = $this->selectFittest($worms);
-            echo "\n King is : ".$this->getOldKing()->getPips(). " \n\t" .serialize($this->getOldKing()->getWeights());
-            echo "\n Queen is : ".$this->getOldQueen()->getPips(). " \n\t" .serialize($this->getOldQueen()->getWeights());
+            // echo "\n King is : ".$this->getOldKing()->getPips(). " \n\t" .serialize($this->getOldKing()->getWeights());
+            // echo "\n Queen is : ".$this->getOldQueen()->getPips(). " \n\t" .serialize($this->getOldQueen()->getWeights());
             $worms = $this->addMutants($worms);
-            echo "set the new generation \n";
             $this->setWorms($worms);
-            echo "again and again \n";
             $this->genTimer();
         }
     }
 
     public function getRich($worms) {
         $this->setTime($this::TIME_THE_WORLD_STARTS);
+        $dataFeed = $this->getDataFeed();
         while($this->getTime() < $this::TIME_OF_THE_WORLD) {
-            $aapl = new AAPL();
-            $interval = $aapl->getInterval($this->getTime() -1, $this->getTime());
+            $interval = $dataFeed->getInterval($this->getTime() -1, $this->getTime());
             foreach ($worms as $worm) {
                 $worm->createVector($interval);
                 $worm->decide();
