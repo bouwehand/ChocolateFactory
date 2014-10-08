@@ -2,7 +2,6 @@
     "module"  : "Forex",
     "cli" : {
         "feed" : "feed.php",
-        "market" : "runMarket.php",
-        "yahoo" : "yahoo.php"
+        "market" : "runMarket.php"
     }
 }
