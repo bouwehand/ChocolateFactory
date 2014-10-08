@@ -7,6 +7,8 @@
  */
 class Cli{
 
+
+    
     /**
      * Run a cli script 
      * 
@@ -24,15 +26,23 @@ class Cli{
         foreach($cliList as $config) {
             $cli = $config->cli;
             if(isset($cli->$scriptName)) {
-                $scriptPath = ROOT. '/Lib/' . $config->module . '/cli/' . $config->cli->$scriptName;
-                if(!file_exists($scriptPath) ) {
-                    throw new Exception('in config ' . $config->module . ' cant find: ' . $scriptPath . "\n" );
+                
+                $scriptPaths[0] = APP_LIB . '/'. $config->module . '/cli/' . $config->cli->$scriptName;
+                $scriptPaths[1] = CHOCOLATE_FACTORY_LIB. '/'. $config->module . '/cli/' . $config->cli->$scriptName;
+                
+                foreach($scriptPaths as $scriptPath) {
+                    if(file_exists($scriptPath)) {
+                        $this->executeCli($scriptPath);    
+                    }
                 }
-                echo "Chocolate Factory run $scriptPath \n\n";
-                include_once($scriptPath);
-                die();
             }
         }
-        die("\n\n cli script '$scriptName' not configured\n\n");
+        die("\n\n cli script '$scriptName' not configured for : $scriptPath \n\n");
+    }
+    
+    private function executeCli($scriptPath) {
+        echo "Chocolate Factory run $scriptPath \n\n";
+        include_once($scriptPath);
+        die();
     }
 }

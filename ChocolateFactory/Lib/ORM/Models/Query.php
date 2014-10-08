@@ -12,7 +12,10 @@ class Query {
      * @var string
      */
     protected $_table;
-    protected $_select = 'SELECT ';
+    
+    protected $_select;
+    protected $_insert;
+    
     protected $_from;
     protected $_fields;
     protected $_where;
@@ -83,8 +86,6 @@ class Query {
         return Query::$instance;
     }
 
-
-
     public function setTable($table) {
         $this->_table = $table;
         return $this;
@@ -97,29 +98,36 @@ class Query {
 
 
     /**
-     * @param $args
+     * @param $args array
+     * @param null $table
      * @param bool $verbose
+     * @throws Exception
      * @internal param $table
-     * @return int
+     * @return this
      */
-    public function insert($args, $verbose = false) {
+    public function insert(Array $args, $table = null, $verbose = false) {
         $columns = "`" .implode("`,`", array_keys($args)) . "`";
         $values = implode(",", array_values($args));
 
-        $sql =
-            "INSERT INTO  `" . $this->getTable() . "` (
+        if($table == null) {
+            $table = $this->getTable();
+        }
+
+        if($table == null) {
+            throw new Exception('no table for insert specified');
+        }
+        
+        $this->setTable($table);
+
+        $this->_insert =
+            " INSERT INTO  `" . $table . "` (
             {$columns}
          )
          VALUES (
             {$values}
-        );";
-        if ( $verbose) echo $sql;
-        try {
-            $result = $this->_pdo->exec($sql);
-        } catch(PDOException $e) {
-            die($e->getMessage() . " " . $sql) ;
-        }
-        return $result;
+        ) ";
+
+        return $this;
     }
 
     /**
@@ -129,7 +137,7 @@ class Query {
      * @return $this
      */
     public function select($fields = '*') {
-
+        $this->_select = 'SELECT ';
         if(is_array($fields))
         {
 
@@ -268,9 +276,15 @@ class Query {
 
     public function buildSql(){
 
-        $sql   = $this->_select;
-        $sql  .= $this->_fields;
-
+        if(!is_null($this->_select)) {
+            $sql   = $this->_select;
+            $sql  .= $this->_fields;
+        }
+        
+        if(!is_null($this->_insert)) {
+            $sql = $this->_insert;
+        }
+        
         if(is_null($this->_table))
         {
             throw new Exception('Table is missing');
@@ -278,9 +292,7 @@ class Query {
         
         if(!is_null($this->_from)) {
             $sql .= $this->_from;
-        } else {
-            $sql .= $this->from($this->getTable());
-        }
+        } 
 
         if(!is_null($this->_join)){
             $sql .=$this->_join;
@@ -313,7 +325,7 @@ class Query {
      * @param bool $verbose
      * @return PDOStatement
      */
-    protected function _query($sql = null, $verbose =false) {
+    public function query($sql = null, $verbose =false) {
         
         if(is_null($sql)) {
             $sql = $this->buildSql();
@@ -337,7 +349,7 @@ class Query {
      * @return array
      */
     public function fetchAll($sql = null, $verbose = false) {
-        $sth = $this->_query($sql, $verbose);
+        $sth = $this->query($sql, $verbose);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
@@ -351,7 +363,7 @@ class Query {
      */
 
     public function fetchOne($sql = null, $verbose  = false) {
-        $sth = $this->_query($sql, $verbose);
+        $sth = $this->query($sql, $verbose);
         $result = $sth->fetch();
         return $result;
     }

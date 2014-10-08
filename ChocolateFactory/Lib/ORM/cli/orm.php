@@ -7,11 +7,14 @@
  */ 
 $query = Query::getInstance();
 
-$result = $query
-    ->select(array("open", "close", "volume"))
-    ->from('yahoo_historical')
-    ->where("id = 1")
-    ->join('yahoo', "volume = volume")
-    ->fetchOne();
+//$result = $query
+//    ->select(array("open", "close", "volume"))
+//    ->from('yahoo_historical')
+//    ->where("id = 1")
+//    ->join('yahoo', "volume = volume")
+//    ->fetchOne();
+
+$result = $query->insert(array("open" => "open", "close" => "close"), 'yahoo_historical')->select(array())->query();
+
 var_dump($result);
 
