@@ -21,6 +21,7 @@ class Performace extends World{
             $king->decide();
             $this->timer();
 
+            // set data feed
             $return[$this->getTime()] = current($aapl->getStep($this->getTime()));
             $return[$this->getTime()]['opendPosition']  = $king->getOpendPosition();
             $return[$this->getTime()]['closedPosition'] = $king->getClosedPosition();
@@ -32,6 +33,7 @@ class Performace extends World{
 
         $worm = new Worm();
         $weights = file_get_contents(APP_LIB . '/Darwin/doc/king.txt');
+        //$weights = file_get_contents(APP_LIB . '/Darwin/doc/lozer.txt');
         $weights = unserialize($weights);
         $worm->setWeights($weights);
         return $worm;

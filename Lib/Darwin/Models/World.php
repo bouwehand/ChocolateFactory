@@ -10,9 +10,9 @@ class World {
     const TIME_THE_WORLD_STARTS  = 2;
     const TIME_OF_THE_WORLD = 1000;
 
-    const GENERATION_SIZE = 10;
+    const GENERATION_SIZE = 20;
 
-    const NUMBER_GENERATIONS = 10;
+    const NUMBER_GENERATIONS = 20;
 
     protected $_time = 2;
 
@@ -22,17 +22,8 @@ class World {
 
     protected $_dataFeed;
 
-
-
     /**
-     * The last best worm
-     *
-     * @var worm object
-     */
-    protected $_oldKing;
-
-    /**
-     * The last best worm
+     * She is the best
      *
      * @var worm object
      */
@@ -62,38 +53,17 @@ class World {
      * @return bool
      * @internal param \worm $oldKing
      */
-    public function setOldKing(Worm $newKing)
+    public function setOldQueen($newQueen)
     {
-        if(is_null($this->_oldKing)) {
-            $this->_oldKing = $newKing;
+        if(is_null($this->_oldQueen)) {
+            $this->_oldQueen = $newQueen;
         }
 
-        if($newKing->getPips() > $this->_oldKing->getPips()){
-            $this->_oldKing = $newKing;
+        if($newQueen->getPips() >= $this->_oldQueen->getPips()){
+            $this->_oldQueen = $newQueen;
             return true;
         }
         return false;
-    }
-
-    /**
-     * @return \worm
-     */
-    public function getOldKing()
-    {
-        return $this->_oldKing;
-    }
-
-    /**
-     * Set the king if score is higher
-     *
-     * @param $newKing
-     * @internal param \worm $oldKing
-     */
-    public function setOldQueen($newQueen)
-    {
-        if(is_object($newQueen)) {
-            $this->_oldQueen = $newQueen;
-        }
 
     }
 
@@ -187,9 +157,7 @@ class World {
             $worms = $this->getRich($worms);
             $worms = $this->starveWorms($worms);
             $worms = $this->selectFittest($worms);
-            // echo "\n King is : ".$this->getOldKing()->getPips(). " \n\t" .serialize($this->getOldKing()->getWeights());
-            // echo "\n Queen is : ".$this->getOldQueen()->getPips(). " \n\t" .serialize($this->getOldQueen()->getWeights());
-            $worms = $this->addMutants($worms);
+            //$worms = $this->addMutants($worms);
             $this->setWorms($worms);
             $this->genTimer();
         }
@@ -257,40 +225,40 @@ class World {
 
         $worms = $this->orderByFitness($worms);
 
-        // pair the best
-        $promKing = current($worms);
-        $promQueen = next($worms);
 
-        if(!$this->setOldKing($promKing)) {
-            $this->setOldQueen(current($worms));
-        }
+        $promQueen = array_shift($worms);
+        // Has a new Queen rissen?
+        if($this->setOldQueen($promQueen) ) {
+            echo "\n Queen is : " .
+                $this->getOldQueen()->getPips() .
+                " \n\t" .
+                serialize($this->getOldQueen()->getWeights());
 
-        $worms = $this->bedRoom($promKing, $promQueen);
+        };
+        $worms = $this->bedRoom($promQueen, $worms);
+
         return $worms;
     }
 
     /**
-     * @param $promKing
      * @param $promQueen
+     * @param $worms
+     * @internal param $promKing
      * @return array
      */
-    public function bedRoom($promKing, $promQueen) {
+    public function bedRoom($promQueen, $worms) {
         $newWorms = array();
         $i = 0;
-        //$pSize = floor($this::GENERATION_SIZE * 0.7);
         $pSize = $this::GENERATION_SIZE;
-
         while($i < $this::GENERATION_SIZE) {
-                $cum        = $promKing->cum();
-                if(!is_object($promQueen)) {
-                    //$promQueen = $this->getOldKing();
-                    $promQueen = $this->getOldQueen();
-                }
+            foreach($worms as $worm) {
+                $cum = $worm->cum();
                 $newWorm = $promQueen->vagina($cum);
                 $newWorms[$newWorm->getId()] = $newWorm;
                 if(count($newWorms) == $pSize) {
                     return $newWorms;
                 }
+            }
             $i++;
         }
         return $newWorms;

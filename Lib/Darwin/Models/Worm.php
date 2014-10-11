@@ -166,19 +166,22 @@ class Worm {
         $this->_weights = $weights;
     }
 
+    public function getRandomWeight() {
+        return (mt_rand(-9000, 9000) / 1000);
+    }
+
 
     /**
      * @internal param \Generation $id id
      */
     function __construct() {
         $this->setId(uniqid());
-        $this->setGender(mt_rand(0,1));
 
         // create weights
         for($i = $this::VECTOR_SIZE;$i >= $this::OUTPUT_LAYER_SIZE; $i--) {
             $j = 0;
             while($j < $i) {
-                $this->_weights[$i][$j] = (mt_rand(-1000, 1000) / 1000);
+                $this->_weights[$i][$j] = $this->getRandomWeight();
                 $j++;
             }
         }
@@ -300,17 +303,28 @@ class Worm {
         IF($vector < 0)  return $this::POS_SELL;
     }
 
+    /**
+     * @return array
+     */
     public function cum() {
         $weights = $this->getWeights();
         $cum = array();
         foreach($weights as $k => $weightLayer) {
-            $count = (floor(count($weightLayer) /2) );
-            if(mt_rand(0,1)) {
-                $cum[$k] = array_slice($weightLayer, $count, $count, true);
-            }else {
-                $cum[$k] = array_slice($weightLayer, 0, $count, true);
-            }
+            $count = count($weightLayer);
+            $sampleStart = mt_rand(0, 1);
+            $sampleIndex = mt_rand($sampleStart, $count);
+            for($i = $sampleStart; $i <= $sampleIndex; $i++) {
+                if(isset($weightLayer[$i])) {
 
+                    // mutation
+                    if(mt_rand(0, 1)) {
+                        $weightLayer[$i] = $this->getRandomWeight();;
+                    }
+
+                    // recombination
+                    $cum[$k][$i] = $weightLayer[$i];
+                }
+            }
         }
         return $cum;
     }
@@ -327,7 +341,11 @@ class Worm {
         $worm = new Worm();
         $weights = $this->getWeights();
         foreach($weights as $k => $weightLayer) {
-             $egg[$k] = array_replace($weightLayer, $cum[$k]);
+            if(isset($cum[$k])) {
+                $egg[$k] = array_replace($weightLayer, $cum[$k]);
+            } else {
+                $egg[$k] = $weightLayer;
+            }
         }
 
         $worm->setWeights($egg);
