@@ -24,6 +24,7 @@ $graph->setXaxis($first, $last, $Xinterval);
 $graph->setYaxis($min, $max, $Yinterval);
 //
 $dataSet = $dataHandler->run();
+
 foreach($dataSet as $marketData) {
         $line = new stdClass();
         $line->step = $marketData['id'];

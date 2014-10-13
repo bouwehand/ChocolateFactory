@@ -359,10 +359,10 @@ class Graph{
             if($lasLinePoint) {
                 $xx = ((($lasLinePoint->step - $xAxisStart) / $xAxisInterval ) * $gridSizeX) + $this->getTextWidth() + $this->getPadding();
                 $xy = ((($lasLinePoint->rate - $yAxisStart) / $yAxisInterval ) * $gridSizeY) + $this->getTextHeight() + $this->getPadding();
-                if(isset($this->_opens[$xx])) {
+                if(isset($this->_opens[$lasLinePoint->step])) {
                     $this->drawText(13, 90 , $xx, $xy, '000000', 'open');
                 }
-                if(isset($this->_closes[$xx])) {
+                if(isset($this->_closes[$lasLinePoint->step])) {
                     $this->drawText(13, 90 , $xx, $xy, '000000', 'close');
                 }
 
