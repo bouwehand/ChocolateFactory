@@ -18,9 +18,24 @@
 $csvFilePath = '/home/bas/vhosts/darwin/Lib/Tool/docs/dogeSmilloions.csv';
 $csv = ChocolateFactory_Core_Csv::init($csvFilePath);
 
+
+$high = $csv->getColumn('high');
+$low = $csv->getColumn('low');
+$volumes = $csv->getColumn('volume');
+
+// calculate the vwap for each bar
+foreach ($csv->getData() as $i => $row ) {
+
+    $vwaps[] = Tool_Financial::vwap(
+        array($row['high'], $row['low']),
+        array($volumes[$i], $volumes[$i]),
+        $volumes[$i]);
+}
+
+die(var_dump($vwaps));
+
 // first calculate the rates of return, they will be normally distributed
-$rates = $csv->getColumn('rate');
-$returns = Tool_Financial::rateOfReturns($rates);
+$returns = Tool_Financial::rateOfReturns($high);
 
 // calculate the mean and the sd
 $mean = Tool_Statistic::mean($returns);
@@ -32,4 +47,4 @@ $zScore = Tool_Statistic::zScore($targetRate, $returns);
 echo "chance of beating the house: " . PHP_EOL;
 echo "mean: $mean sd: $sd, targetRate : $targetRate, zScore: $zScore". PHP_EOL;
 echo " mean VS vwap: ";
-echo Tool_Statistic::mean($rates) . " " . Tool_Financial::vwap($rates, $volumes) . PHP_EOL;
+echo Tool_Statistic::mean($high) . " " . Tool_Financial::vwap($high, $volumes) . PHP_EOL;

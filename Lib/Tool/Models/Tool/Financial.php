@@ -100,14 +100,24 @@ class Tool_Financial
     /**
      * Volume Weighted Average Price
      *
-     * @param $rates
-     * @param $volumes
+     * @param array $rates
+     * @param array $volumes
+     * @throws Exception
      * @return float
-     * @internal param $array
-     * @internal param $array
      */
     public static function vwap(Array $rates, Array $volumes)
     {
-        return (array_sum($rates) * array_sum($volumes) ) / array_sum($volumes);
+        $countRates = count($rates);
+        $countVolumes = count($volumes);
+        if($countRates != $countVolumes) {
+            throw new Exception("Rates lenght $countRates is not lenght volume $countVolumes");
+        }
+        $sumA = 0;
+        $sumB = 0;
+        foreach($rates as $i => &$rate) {
+                $sumA += $rates[$i] * $volumes[$i];
+                $sumB += $volumes[$i];
+        }
+        return $sumA / $sumB;
     }
 }
