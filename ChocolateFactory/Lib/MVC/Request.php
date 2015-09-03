@@ -9,7 +9,7 @@
  * @author B.j.ouwehand <b.j.ouwehand@gmail.com
  *
  */
-class Request
+class ChocolateFactory_MVC_Request
 {
     /**
      * Instance $requestInstance Instanse of the request Object
@@ -103,7 +103,7 @@ class Request
         }
         $this->_url  = $string;
         return $this;
-    }// setFullUrlll() 
+    }// setFullUrlll()
 
     /**
      * Full url Getter

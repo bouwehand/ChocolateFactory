@@ -1,7 +1,7 @@
 <?php
 
 
-class Query {
+class ChocolateFactory_Core_Query {
 
     /**
      * @var $instance Query
@@ -21,9 +21,9 @@ class Query {
 
     /**
      * mysql:dbname=<databasename>;host=localhost
-     * 
+     *
      * @return string dsn config
-     * 
+     *
      */
     public static function getDsn()
     {
@@ -54,7 +54,7 @@ class Query {
         $jsonConfig = JsonConfig::getInstance();
         return $jsonConfig->getSysConf('core/query/password');
     }
-    
+
     /**
      * Initialize the PDO wrapper
      */
