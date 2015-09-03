@@ -2,7 +2,7 @@
 /**
  *
  */
-class HomeController extends Controller {
+class HomeController extends ChocolateFactory_MVC_Controller {
 
 
     public function home() {

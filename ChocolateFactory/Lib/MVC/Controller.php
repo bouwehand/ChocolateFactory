@@ -8,7 +8,7 @@
  * Abstract class for creating a controller in my Framework.
  *
  */
-abstract class Controller
+abstract class ChocolateFactory_MVC_Controller
 {
 
     /**

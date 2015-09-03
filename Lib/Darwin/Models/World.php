@@ -49,7 +49,8 @@ class World {
     /**
      * Set the king if score is higher
      *
-     * @param $newKing
+     * @param $newQueen
+     * @internal param $newKing
      * @return bool
      * @internal param \worm $oldKing
      */
@@ -227,7 +228,7 @@ class World {
 
 
         $promQueen = array_shift($worms);
-        // Has a new Queen rissen?
+        // Has a new Queen risen?
         if($this->setOldQueen($promQueen) ) {
             echo "\n Queen is : " .
                 $this->getOldQueen()->getPips() .

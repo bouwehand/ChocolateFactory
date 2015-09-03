@@ -96,4 +96,18 @@ class Tool_Financial
         $difference =  current($array) - end($array);
         return $difference;
     }
+
+    /**
+     * Volume Weighted Average Price
+     *
+     * @param $rates
+     * @param $volumes
+     * @return float
+     * @internal param $array
+     * @internal param $array
+     */
+    public static function vwap(Array $rates, Array $volumes)
+    {
+        return (array_sum($rates) * array_sum($volumes) ) / array_sum($volumes);
+    }
 }

@@ -5,7 +5,7 @@
  * Date: 5/13/14
  * Time: 12:01 PM
  */
-class  Email{
+class  ChocolateFactory_Core_Email{
 
     protected $headers;
     protected $params;
