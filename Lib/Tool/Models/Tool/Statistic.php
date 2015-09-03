@@ -17,7 +17,12 @@ class Tool_Statistic
     static function zScore($x, Array $p) {
         $m = self::mean($p);
         $sd = self::sd($p);
-        return $x - $m / $sd;
+        return ($x - $m) / $sd;
+    }
+
+    static function ZScoreToPvalue($z, Array $p)
+    {
+
     }
 
     /**

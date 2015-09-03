@@ -64,6 +64,12 @@ class Tool_Financial
         return $intervals;
     }
 
+
+    public static function rateOfReturn($vInitial, $vFinal)
+    {
+        return ($vFinal - $vInitial) / $vInitial;
+    }
+
     /**
      * Return of an array the rate of return for each value
      * @param array $array
