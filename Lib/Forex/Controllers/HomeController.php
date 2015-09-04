@@ -24,9 +24,9 @@ class HomeController extends ChocolateFactory_MVC_Controller {
 
 
 
-        $eurgbp = CSV::load('EURGBP');
-        $eurusd = CSV::load('EURUSD');
-        $gbpusd = csv::load('GPBUSD');
+        $eurgbp = ChocolateFactory_Core_Csv::init('EURGBP');
+        $eurusd = ChocolateFactory_Core_Csv::init('EURUSD');
+        $gbpusd = ChocolateFactory_Core_Csv::init('GPBUSD');
 
         // walk through time
         for($i =0 ; $i < $eurgbp->getLength(); $i++) {

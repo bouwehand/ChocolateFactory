@@ -14,15 +14,14 @@ class Tool_Statistic
      * @param array $p
      * @return mixed
      */
-    static function zScore($x, Array $p) {
-        $m = self::mean($p);
-        $sd = self::sd($p);
-        return ($x - $m) / $sd;
+    static function zScore($x, $m, $sigma) {
+
+        return ($x - $m) / $sigma;
     }
 
     static function ZScoreToPvalue($z, Array $p)
     {
-
+        
     }
 
     /**
@@ -82,5 +81,16 @@ class Tool_Statistic
                 ($n * $sumXs - ($sumX * $sumX)) * ($n * $sumYs - ($sumY * $sumY))
         ));
         return $correlation;
+    }
+
+    /**
+     * @param $x
+     * @param $mu
+     * @param $sigma
+     * @return float
+     */
+    static function normalDistribution($x, $mu, $sigma) {
+        return exp(-0.5 * ($x - $mu) * ($x - $mu) / ($sigma*$sigma))
+        / ($sigma * sqrt(2.0 * M_PI));
     }
 }

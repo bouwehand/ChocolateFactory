@@ -11,7 +11,7 @@ class ChocolateFactory_MVC {
      */
     public function run() {
         $request = ChocolateFactory_MVC_Request::getInstance();
-        $controller = Controller::getInstance($request->getControllerName(), $request->getAction());
+        $controller = ChocolateFactory_MVC_Controller::getInstance($request->getControllerName(), $request->getAction());
 
 
     }

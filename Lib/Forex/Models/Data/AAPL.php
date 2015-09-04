@@ -21,7 +21,7 @@ class AAPL extends Data {
      * @return mixed
      */
     public function getMax($first, $last) {
-        $this->_query = Query::getInstance();
+        $this->_query = ChocolateFactory_Core_Query::getInstance();
         $this->_query->setTable($this->getTableName());
 
         $sql =
@@ -38,7 +38,7 @@ class AAPL extends Data {
      * @return mixed
      */
     public function getMin($first, $last) {
-        $this->_query = Query::getInstance();
+        $this->_query = ChocolateFactory_Core_Query::getInstance();
         $this->_query->setTable($this->getTableName());
 
         $sql =
@@ -55,7 +55,7 @@ class AAPL extends Data {
      * @return mixed
      */
     public function getInterval($first, $last) {
-        $this->_query = Query::getInstance();
+        $this->_query = ChocolateFactory_Core_Query::getInstance();
         $this->_query->setTable($this->getTableName());
 
         $sql =

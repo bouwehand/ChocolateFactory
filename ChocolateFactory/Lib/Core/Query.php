@@ -4,7 +4,7 @@
 class ChocolateFactory_Core_Query {
 
     /**
-     * @var $instance Query
+     * @var $instance ChocolateFactory_Core_Query
      */
     private static $instance;
 
@@ -61,9 +61,9 @@ class ChocolateFactory_Core_Query {
     private function __construct()
     {
         try {
-            $this->_pdo =  new PDO(Query::getDsn(), Query::getUser(), Query::getPassword());
+            $this->_pdo =  new PDO(self::getDsn(), self::getUser(), self::getPassword());
         } catch (PDOException $e) {
-            Logger::error('Connection failed: ' . $e->getMessage() . " \n\n");
+            ChocolateFactory_Core_Logger::error('Connection failed: ' . $e->getMessage() . " \n\n");
         }
         $this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $this->_instance = $this;
@@ -73,10 +73,10 @@ class ChocolateFactory_Core_Query {
 
     public static function getInstance() {
 
-        if (!Query::$instance instanceof self) {
-            Query::$instance = new Query();
+        if (!self::$instance instanceof self) {
+            self::$instance = new self();
         }
-        return Query::$instance;
+        return self::$instance;
     }
 
     public function truncate($table) {

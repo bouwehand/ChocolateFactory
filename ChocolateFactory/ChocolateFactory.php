@@ -36,7 +36,7 @@ class ChocolateFactory {
             $cli->run();
         } else {
             //run mvc
-            $mvc = new MVC();
+            $mvc = new ChocolateFactory_MVC();
             $mvc->run();
         }
     }

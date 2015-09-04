@@ -12,7 +12,37 @@
  */
 class ChocolateFactory_Core_Csv
 {
-    protected $_data;
+
+    /**
+     * @var array
+     */
+    protected $_head = array();
+
+    /**
+     * @var data
+     */
+    protected $_data = array();
+
+    /**
+     * @var Lenght of the csv file
+     */
+    protected $_lenght;
+
+    /**
+     * @param array $head
+     */
+    public function setHead($head)
+    {
+        $this->_head = $head;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHead()
+    {
+        return $this->_head;
+    }
 
     /**
      * @param mixed $data
@@ -28,6 +58,17 @@ class ChocolateFactory_Core_Csv
     public function getData()
     {
         return $this->_data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLength()
+    {
+        if (!$this->_length) {
+            $this->_length = count($this->getData());
+        }
+        return $this->_length;
     }
 
     /**
@@ -63,6 +104,7 @@ class ChocolateFactory_Core_Csv
                 throw new Exception("CSV row length is inconsistent on line " . $key);
             };
         }
+        $csvClass->setHead($keys);
         $csvClass->setData($csv);
         return $csvClass;
     }

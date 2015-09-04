@@ -3,7 +3,7 @@
  * Chocolate Factory Framework
  *
  * Because i wanna be in the chocolate factory with Willy Fuckin Wonka
- * Dancing with the Oempa loempa's like this
+ * Dancing with the Oempa loempas like this
  *
  * @autor       Bastiaan Jeroen Ouwehand
  * @version     camsite
@@ -39,5 +39,6 @@ $chocolateFactory = new ChocolateFactory();
 try {
     $chocolateFactory->run();
 } catch (Exception $e) {
-    Logger::error($e->getMessage());
+    ChocolateFactory_Core_Logger::error($e->getMessage());
+    die($e->getMessage());
 }

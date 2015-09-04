@@ -49,7 +49,7 @@ class ChocolateFactory_MVC_Request
     public static function getInstance()
     {
         if (empty(self::$_instance)) {
-            self::$_instance = new Request();
+            self::$_instance = new self();
         }
         return self::$_instance;
     }

@@ -5,8 +5,7 @@
  * Date: 3/13/15
  * Time: 11:26 AM
  */
-class IngController extends Controller {
-
+class IngController extends ChocolateFactory_Core_Csv {
 
     /**
      * home controller

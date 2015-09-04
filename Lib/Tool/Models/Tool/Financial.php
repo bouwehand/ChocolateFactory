@@ -78,7 +78,7 @@ class Tool_Financial
     public static function rateOfReturns(Array $array) {
         foreach($array as $key => $value) {
             if(isset($lastkey)) {
-                $returns[$lastkey] = ($array[$lastkey] - $value) / $value ;
+                $returns[] = ($array[$lastkey] - $value) / $value ;
             }
             $lastkey = $key;
         }
