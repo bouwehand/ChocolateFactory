@@ -19,9 +19,9 @@ class Tool_Statistic
         return ($x - $m) / $sigma;
     }
 
-    static function ZScoreToPvalue($z, Array $p)
+    static function transformZScoreToX($z, $m , $sigma)
     {
-        
+        return $sigma * $z + $m;
     }
 
     /**

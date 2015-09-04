@@ -26,7 +26,7 @@ asort($returns);
 
 // calculate the mean and the sd
 $mean = Tool_Statistic::mean($returns);
-die(var_dump($mean));
+//die(var_dump($mean));
 $sd = Tool_Statistic::sd($returns);
 //$targetRate = Tool_Financial::rateOfReturn(55,56);
 $targetRate = 0.0013;
@@ -36,4 +36,4 @@ $zScore = Tool_Statistic::zScore($targetRate, $mean, $sd);
 // echo "mean: $mean sd: $sd, targetRate : $targetRate, zScore: $zScore". PHP_EOL;
 
 $test = new Test_Statistical();
-$test->normality($mean, $sd);
+$test->normality(183, 10);
