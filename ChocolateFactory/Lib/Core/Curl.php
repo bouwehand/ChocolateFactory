@@ -1,6 +1,9 @@
 <?php
 
-class Curl {
+/**
+ * Class ChocolateFactory_Core_Curl
+ */
+class ChocolateFactory_Core_Curl {
 
     protected $_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36';
     protected $_timeout = 30;

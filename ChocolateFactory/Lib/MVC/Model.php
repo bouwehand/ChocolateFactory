@@ -1,49 +1,49 @@
 <?php
 require_once(CHOCOLATE_FACTORY_LIB . "/Core/Query.php");
-class Model extends Query { 
- 
-	protected $model; 
+class ChocolateFactory_MVC_Model extends ChocolateFactory_Core_Query {
+
+	protected $model;
 	private $_data;
-	
+
 	public function __construct(){
-		$this->model = lcfirst(get_class($this)); 
-	   $query = Query::getInstance();
+		$this->model = lcfirst(get_class($this));
+	   $query = self::getInstance();
     }
-    
+
     /**
-     * Dynamic database row fatching function 
+     * Dynamic database row fatching function
      */
-    public function fetch($arg) { 
-        
-        $dbh = Query::getInstance(); 
+    public function fetch($arg) {
+
+        $dbh = self::getInstance();
         $sth = $dbh->prepare("SELECT * FROM $this->model LIMIT $arg");
         $sth->execute();
         return $sth->fetchAll();
     }
-    
+
     public function __call($functionName, $arguments) {
-        
+
         $functionType = substr($functionName, 0,3);
-        
+
         switch($functionType) {
             case "set" :
                 $name = strtolower(substr($functionName, 3));
                 $this->_data->$name = current($arguments);;
             break;
             case "get" :
-            break;    
+            break;
         }
-        
-        
+
+
         return $this;
     }
-    
+
     public function jsonEncode() {
         return json_encode($this->_data);
     }
-    
+
     public function save() {
-         $query = Query::getInstance();
+         $query = ChocolateFactory_Core_Query::getInstance();
          $values = array('bob', 'alice', 'lisa', 'john');
 // $name = '';
 // $stmt = $db->prepare("INSERT INTO table(`name`) VALUES(:name)");
@@ -52,9 +52,9 @@ class Model extends Query {
 //   $stmt->execute();
 // }
 //          $stmt = $query->prepare("INSERT INTO table(
-//         foreach($this->_data as $name => value) { 
+//         foreach($this->_data as $name => value) {
 //             $this
-//         }    
+//         }
 //     }
-    }    
+    }
 }

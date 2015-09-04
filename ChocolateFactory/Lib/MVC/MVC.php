@@ -5,12 +5,12 @@
  * Date: 7/13/14
  * Time: 7:05 PM
  */
-class MVC {
+class ChocolateFactory_MVC {
     /**
      * MVC mule function
      */
     public function run() {
-        $request = Request::getInstance();
+        $request = ChocolateFactory_MVC_Request::getInstance();
         $controller = Controller::getInstance($request->getControllerName(), $request->getAction());
 
 

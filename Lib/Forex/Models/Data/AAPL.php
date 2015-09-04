@@ -8,10 +8,18 @@
 require_once(APP_LIB . '/Forex/Models/Data.php');
 class AAPL extends Data {
 
+    /**
+     *
+     */
     public function __construct() {
         $this->setTableName('AAPL_historical');
     }
 
+    /**
+     * @param $first
+     * @param $last
+     * @return mixed
+     */
     public function getMax($first, $last) {
         $this->_query = Query::getInstance();
         $this->_query->setTable($this->getTableName());
@@ -24,6 +32,11 @@ class AAPL extends Data {
         return $result['max'];
     }
 
+    /**
+     * @param $first
+     * @param $last
+     * @return mixed
+     */
     public function getMin($first, $last) {
         $this->_query = Query::getInstance();
         $this->_query->setTable($this->getTableName());
@@ -36,6 +49,11 @@ class AAPL extends Data {
         return $result['min'];
     }
 
+    /**
+     * @param $first
+     * @param $last
+     * @return mixed
+     */
     public function getInterval($first, $last) {
         $this->_query = Query::getInstance();
         $this->_query->setTable($this->getTableName());
