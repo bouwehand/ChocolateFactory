@@ -23,7 +23,7 @@ $graph = new Graph();
 $graph->setXaxis($first, $last, $Xinterval);
 $graph->setYaxis($min, $max, $Yinterval);
 //
-$dataSet = $dataHandler->run();
+$dataSet = $dataHandler->spin();
 
 foreach($dataSet as $marketData) {
         $line = new stdClass();

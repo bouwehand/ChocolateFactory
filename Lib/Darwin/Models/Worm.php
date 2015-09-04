@@ -46,6 +46,8 @@ class Worm {
 
     protected $_pips = 0;
 
+    protected $_lastPips = 0;
+
     protected $_in = 0;
 
     protected $_openedPosition = 0;
@@ -213,14 +215,20 @@ class Worm {
         return $this->_id;
     }
 
-    public function createVector($interval) {
-        $this->setInterval($interval[1]);
-        $vector = new Vector($interval);
-        $this->_vector = $vector->getValues();
+    public function setVector($vector) {
+        $this->_vector = $vector;
     }
 
     public function getVector() {
         return $this->_vector;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastPips()
+    {
+        return $this->_lastPips;
     }
 
     /**
@@ -235,14 +243,13 @@ class Worm {
 
     public function handleAccount($decision) {
         $in = $this->getIn();
-
+        $interval = current($this->getInterval());
         switch($decision) {
             case $this::POS_BUY :
                 if($in == 0) {
                     $this->_in    = 1;
                     $this->_openedPosition  = 1;
                     $this->_closedPosition = 0;
-                    $interval = $this->getInterval();
                     $this->setOpenRate($interval['close']);
                 } else {
                     $this->_openedPosition  = 0;
@@ -254,9 +261,8 @@ class Worm {
                     $this->_in    = 0;
                     $this->_openedPosition = 0;
                     $this->_closedPosition = 1;
-                    $interval = $this->getInterval();
-                    $pips = $this->getOpenRate() - $interval['close'];
-                    $this->_pips = $this->_pips + $pips;
+                    $this->_lastPips = $interval['close'] - $this->getOpenRate();
+                    $this->_pips = $this->_pips + $this->_lastPips;
                 }else {
                     $this->_openedPosition  = 0;
                     $this->_closedPosition = 0;

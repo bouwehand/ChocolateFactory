@@ -5,22 +5,15 @@
  * Date: 8/15/14
  * Time: 5:11 PM
  */
-class World {
-
-    const TIME_THE_WORLD_STARTS  = 2;
-    const TIME_OF_THE_WORLD = 1000;
+class World extends Darwin {
 
     const GENERATION_SIZE = 20;
 
-    const NUMBER_GENERATIONS = 20;
-
-    protected $_time = 2;
+    const NUMBER_GENERATIONS = 10000;
 
     protected $_genN = 0;
 
     protected $_worms = array();
-
-    protected $_dataFeed;
 
     /**
      * She is the best
@@ -30,26 +23,10 @@ class World {
     protected $_oldQueen;
 
     /**
-     * @param mixed $dataFeed
-     */
-    public function setDataFeed($dataFeed)
-    {
-        $this->_dataFeed = $dataFeed;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDataFeed()
-    {
-        return $this->_dataFeed;
-    }
-
-
-    /**
-     * Set the king if score is higher
+     * Set the Queen if score is higher
      *
-     * @param $newKing
+     * @param $newQueen
+     * @internal param $newKing
      * @return bool
      * @internal param \worm $oldKing
      */
@@ -77,18 +54,6 @@ class World {
 
 
 
-    public function timer () {
-        return $this->_time++;
-    }
-
-    /**
-     * @param int $time
-     */
-    public function setTime($time)
-    {
-        $this->_time = $time;
-    }
-
     /**
      * @param $genN
      * @internal param int $gen
@@ -109,15 +74,6 @@ class World {
     public function genTimer() {
         return $this->_genN++;
     }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->_time;
-    }
-
 
     /**
      * @param array $worms
@@ -145,32 +101,47 @@ class World {
         return $this->_worms[$id];
     }
 
-    public function run() {
-
-        // initialize datafeed
-        $dataFeed = new AAPL();
-        $this->setDataFeed($dataFeed);
-
+    /**
+     *
+     */
+    public function spin() {
         $worms = $this->getWorms();
         while($this->getGenN() < $this::NUMBER_GENERATIONS) {
             echo "\n\n >> generation " .$this->getGenN() . " \n\n";
             $worms = $this->getRich($worms);
             $worms = $this->starveWorms($worms);
-            $worms = $this->selectFittest($worms);
-            //$worms = $this->addMutants($worms);
+            if($worms) {
+                $worms = $this->selectFittest($worms);
+            } else {
+                echo "\n\n all worms died, create new generation \n\n";
+                $worms = $this->createGeneration($this::GENERATION_SIZE);
+            }
             $this->setWorms($worms);
             $this->genTimer();
         }
     }
 
+    /**
+     *
+     *
+     */
     public function getRich($worms) {
         $this->setTime($this::TIME_THE_WORLD_STARTS);
         $dataFeed = $this->getDataFeed();
+
+        $vectorSpace = $this->getVectorSpace();
         while($this->getTime() < $this::TIME_OF_THE_WORLD) {
-            $interval = $dataFeed->getInterval($this->getTime() -1, $this->getTime());
-            foreach ($worms as $worm) {
-                $worm->createVector($interval);
+            $step = $dataFeed->getStep($this->getTime());
+            foreach ($worms as $k => $worm) {
+                $vector = $vectorSpace->getVector($this->getTime());
+                $worm->setVector($vector);
+                $worm->setInterval($step);
                 $worm->decide();
+
+                // kill the lozers
+                if($worm->getPips() < -5) {
+                   unset($worms[$k]);
+                }
             }
             $this->timer();
         }
@@ -196,19 +167,13 @@ class World {
         // worms without pips starve
         $return = array();
         foreach ($worms as $id =>$worm) {
-
             if ($worm->getPips() > 0) {
                 $return[$id] =  $worm;
-
             }
         }
-
         if(count($return) == 0) {
-            //throw new Exception('all your worms died on generation ' . $this->getGenN());
-            echo "\n they all died at gen ". $this->getGenN() . " creating new generation";
-            $return = $this->createGeneration($this::GENERATION_SIZE);
+            return false;
         }
-
         return $return;
     }
 
@@ -224,16 +189,17 @@ class World {
     public function selectFittest($worms) {
 
         $worms = $this->orderByFitness($worms);
-
-
         $promQueen = array_shift($worms);
-        // Has a new Queen rissen?
+        // Has a new Queen risen?
         if($this->setOldQueen($promQueen) ) {
             echo "\n Queen is : " .
                 $this->getOldQueen()->getPips() .
                 " \n\t" .
-                serialize($this->getOldQueen()->getWeights());
+                $sq = serialize($this->getOldQueen()->getWeights());
+                file_put_contents(APP_LIB . "/Darwin/doc/king.txt", $sq);
 
+        } else {
+            $promQueen = $this->getOldQueen();
         };
         $worms = $this->bedRoom($promQueen, $worms);
 
@@ -262,13 +228,6 @@ class World {
             $i++;
         }
         return $newWorms;
-    }
-
-    public function addMutants($worms) {
-        $pSize = ceil($this::GENERATION_SIZE * 0.3);
-        $mutants = $this->createGeneration($pSize);
-        $worms = array_merge($worms, $mutants);
-        return $worms;
     }
 
     /**

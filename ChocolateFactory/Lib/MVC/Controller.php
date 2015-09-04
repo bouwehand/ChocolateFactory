@@ -94,7 +94,7 @@ abstract class Controller
 
         if (empty($name)) {
             if (!isset($defaultHomepage) || empty($defaultHomepage) ) {
-                throw new Exception('MVC/default/homepage was not configured');
+                throw new Exception('MVC/default/homepage was not configured' . PHP_EOL);
             }
             $name = $defaultHomepage;
         }
@@ -103,7 +103,7 @@ abstract class Controller
 
         // check if the controller class exists
         if (!class_exists($nameController)) {
-            throw new Exception('Controller ' . $nameController . ' whas not created');
+            throw new Exception('Controller ' . $nameController . ' was not created' . PHP_EOL);
         }
 
         // return the right controller

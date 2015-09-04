@@ -28,6 +28,7 @@ define('ROOT', getcwd());
 define('CHOCOLATE_FACTORY', ROOT . '/ChocolateFactory');
 define('CHOCOLATE_FACTORY_CORE' , CHOCOLATE_FACTORY . '/Core');
 define('CHOCOLATE_FACTORY_LIB', CHOCOLATE_FACTORY . '/Lib');
+define('CHOCOLATE_FACTORY_DOC', ROOT . '/doc');
 
 define('APP_LIB', ROOT . '/Lib');
 
