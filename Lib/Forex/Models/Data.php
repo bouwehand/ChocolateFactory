@@ -16,7 +16,7 @@ class Data {
      * 3894
      */
     const MAX_STEP_NUM = 400;
-    
+
     /**
      * @var array Last step in game
      */
@@ -26,7 +26,7 @@ class Data {
      * @var Query object
      */
     protected $_query;
-    
+
     /**
      *
      */
@@ -48,7 +48,7 @@ class Data {
         return $this->_tableName;
     }
 
-    
+
 
     public function __construct () {
         return $this;
@@ -64,7 +64,7 @@ class Data {
      * @return int
      */
     public function getStep($step, $verbose = false) {
-        $this->_query = Query::getInstance();
+        $this->_query = ChocolateFactory_Core_Query::getInstance();
         $this->_query->setTable($this->getTableName());
 
         $sql = "SELECT * FROM `". $this->getTableName() . "` WHERE id = $step";

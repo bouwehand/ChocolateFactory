@@ -1,4 +1,5 @@
 <?php
+require_once(APP_LIB . '/Darwin/Models/Darwin.php');
 /**
  * Created by PhpStorm.
  * User: thrynillan

@@ -24,9 +24,9 @@ class ChocolateFactory_Core_Csv
     protected $_data = array();
 
     /**
-     * @var Lenght of the csv file
+     * @var Length of the csv file
      */
-    protected $_lenght;
+    protected $_length;
 
     /**
      * @param array $head

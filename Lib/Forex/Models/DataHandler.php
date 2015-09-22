@@ -27,7 +27,7 @@ class DataHandler{
     protected  $_lastStep = array();
 
     public function __construct () {
-        $this->_query = Query::getInstance();
+        $this->_query = ChocolateFactory_Core_Query::getInstance();
         $this->_query->setTable(self::RATES_TABLE_NAME);
         return $this;
     }
