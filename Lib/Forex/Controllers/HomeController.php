@@ -6,7 +6,31 @@ class HomeController extends ChocolateFactory_MVC_Controller {
 
 
     public function home() {
+        $eurgbp = ChocolateFactory_Core_Csv::init('/home/bas/vhosts/darwin/doc/EURGBP.csv');
+        $eurgbp->dropColumn('TICKER');
+        $eurgbp->dropColumn('TIME');
 
+        $array = array(
+            4,5,7,8,4,3,2,1,1,5,7
+        );
+        $graph = new Graph();
+
+        $lines['name'] = 'rate';
+        $lines['color'] = '000000';
+        foreach($array as $i => $high) {
+            $line = new stdClass();
+            $line->step = $i;
+            $line->rate = $high;
+            $lines['name'] = 'rate';
+            $lines['color'] = '00CED1';
+            $lines['data'][] = $line;
+        }
+        $first = reset($array);
+        $graph->setXaxis(0, 10, 1);
+        $graph->setYaxis(0, 10, 1);
+        $graph->addLine($lines);
+        $graph->render();
+        die();
     }
 
     public function darwin() {

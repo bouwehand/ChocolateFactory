@@ -86,6 +86,18 @@ class ChocolateFactory_Core_Csv
         return $column;
     }
 
+    public function dropColumn($name)
+    {
+        $data = array();
+        foreach( $this->getData() as $i => $row)
+        {
+            unset($row[$name]);
+            $data[$i] = $row;
+        }
+        $this->setData($data);
+        return $this;
+    }
+
     /**
      * @param $csvFilePath
      * @return ChocolateFactory_Core_Csv
