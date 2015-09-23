@@ -6,3 +6,5 @@ systemConf.json
  # phar archives
  /*.phar
 
+
+/vendor/

@@ -1,0 +1,15 @@
+{
+    "name": "bouwehand/cf",
+    "description": "I wanna be with the oempa loopa's dancing like this",
+    "require": {
+        "php": ">=5.4",
+        "khill/lavacharts":"2.5.*"
+    },
+    "authors": [
+        {
+            "name": "Bas Ouwehand",
+            "email": "b.ouwehand@youwe.nl"
+        }
+    ],
+    "minimum-stability": "alpha"
+}

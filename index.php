@@ -31,9 +31,9 @@ define('CHOCOLATE_FACTORY_LIB', CHOCOLATE_FACTORY . '/Lib');
 define('CHOCOLATE_FACTORY_DOC', ROOT . '/doc');
 
 define('APP_LIB', ROOT . '/Lib');
+define('VENDOR_LIB', ROOT . '/vendor');
 
-
-
+require VENDOR_LIB . '/autoload.php';
 require_once(CHOCOLATE_FACTORY .'/ChocolateFactory.php');
 $chocolateFactory = new ChocolateFactory();
 try {
