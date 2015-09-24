@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * Class Tool_Statistic
+ *
+ * Statistic methods
+ * @todo add regression analysis
+ *       - is there a polominal aproximisation of stock chance possible?
+ *       https://en.wikipedia.org/wiki/Polynomial_regression
+ */
 class Tool_Statistic
 {
     /**
@@ -11,8 +20,9 @@ class Tool_Statistic
 
     /**
      * @param       $x
-     * @param array $p
-     * @return mixed
+     * @param       $m
+     * @param       $sigma
+     * @return float
      */
     static function zScore($x, $m, $sigma) {
 
