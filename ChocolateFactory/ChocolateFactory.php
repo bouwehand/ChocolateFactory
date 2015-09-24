@@ -22,11 +22,12 @@ class ChocolateFactory {
         $jsonConfig->loadDir(CHOCOLATE_FACTORY_LIB);
         $jsonConfig->loadDir(APP_LIB);
         if (!($jsonConfig->checkSystemConf())) {
-            $jsonConfig->writeSystemConf();    
+            $jsonConfig->writeSystemConf();
         }
 
         //load class library
         $this->_loadClasses(CHOCOLATE_FACTORY_LIB);
+        $this->_loadClasses(APP_CONTROLLER);
         $this->_loadClasses(APP_LIB);
 
         // Run the mvc web framework if we are in the browser
