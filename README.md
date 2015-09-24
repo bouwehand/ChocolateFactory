@@ -8,13 +8,13 @@ Because i wanna be in the chocolate factory with Willy Fuckin Wonka, Dancing wit
 @autor       Bastiaan Jeroen Ouwehand <b.j.ouwehand@gmail.com>
 @version     0.1.0
 
-Realy simple Framework. I develop while programing. Each time I think, would it not be cool if... and then i add
+Really simple Framework. I develop while programing. Each time I think, would it not be cool if... and then i add
 
 I say never be complete
 evolve
 and let the chips fall where they may
 
-CLI
+Cli
 ---
 configure cli script in json file of the module
 `
