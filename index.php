@@ -31,6 +31,7 @@ define('CHOCOLATE_FACTORY_LIB', CHOCOLATE_FACTORY . '/Lib');
 define('CHOCOLATE_FACTORY_DOC', ROOT . '/doc');
 define('APP_LIB', ROOT . '/Lib');
 define('APP_CONTROLLER', ROOT. '/Controller');
+define('APP_VIEW', ROOT . '/view');
 define('VENDOR_LIB', ROOT . '/vendor');
 
 require VENDOR_LIB . '/autoload.php';

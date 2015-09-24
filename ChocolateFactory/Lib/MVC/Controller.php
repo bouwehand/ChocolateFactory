@@ -244,8 +244,7 @@ abstract class ChocolateFactory_MVC_Controller
      */
     protected function setTemplate($name, $action = null)
     {
-        $viewDir = JsonConfig::getInstance()->getConf('MVC/dir/views');
-        $this->_template = APP_LIB . '/' . $this->getModule() . '/' . $viewDir . '/' . $action . '.php';
+        $this->_template = APP_VIEW . '/' . $this->getControllerName() . '/' . $action . '.php';
         return $this;
     }// SetTemplate
 
