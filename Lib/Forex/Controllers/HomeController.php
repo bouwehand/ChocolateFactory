@@ -45,16 +45,11 @@ class HomeController extends ChocolateFactory_MVC_Controller {
      */
     public function forex()
     {
-
-
-
         $eurgbp = ChocolateFactory_Core_Csv::init('/home/bas/vhosts/darwin/doc/EURGBP.csv');
         $eurusd = ChocolateFactory_Core_Csv::init('/home/bas/vhosts/darwin/doc/EURUSD.csv');
         $gbpusd = ChocolateFactory_Core_Csv::init('/home/bas/vhosts/darwin/doc/GBPUSD.csv');
 
-
         $graph = new Graph();
-
         $lines['name'] = 'rate';
         $lines['color'] = '000000';
         foreach($eurgbp->getColumn('HIGH') as $i => $high) {
@@ -78,7 +73,7 @@ class HomeController extends ChocolateFactory_MVC_Controller {
 
         $rates = $csv->getColumn('Adj Close');
         $dates = $csv->getColumn('Date');
-        /*
+
                 // calculate the rate of for each bar
                 $returns = array();
 
@@ -87,11 +82,11 @@ class HomeController extends ChocolateFactory_MVC_Controller {
                     // values should be positive, so they will be treated as difference of 0
 
 
-                     using the rates of return which are normaly distributed
+                    // using the rates of return which are normaly distributed
                     if($final) $returns[] = abs(Tool_Financial::rateOfReturn($value, $final));
                     $final = $value;
                 }
-        */
+        //$rates = $returns;
         rsort($rates);
 
         // calculate the mean and the sd
@@ -99,18 +94,24 @@ class HomeController extends ChocolateFactory_MVC_Controller {
         //die(var_dump($mean));
         $sd = Tool_Statistic::sd($rates);
 
+        $test = new Test_Statistical();
+        $normal = $test->normality($mean, $sd, false);
+        $normal2 = $test->normality(183, 10, false);
+
         $lava = new Khill\Lavacharts\Lavacharts;
         $stocksTable = $lava->DataTable();  // Lava::DataTable() if using Laravel
 
         $stocksTable
-            ->addDateColumn('Day')
-            ->addNumberColumn('Rate of return');
+            ->addNumberColumn('z')
+            ->addNumberColumn('p1 : distribution rates AAPL')
+            ->addNumberColumn('p2 : distribution male length');
+
 
         // Random Data For Example
-        foreach ($rates as $i => $rate)
+        foreach ($normal as $i => $value)
         {
             $rowData = array(
-                "$dates[$i]", $rate
+                $value['z'],  $value['P'], $normal2[$i]['P']
             );
 
             $stocksTable->addRow($rowData);

@@ -23,6 +23,11 @@ class Test_Statistical{
 
             /** cumulative P for reading */
             $sumP += $p;
+            $data[] = array(
+                'z'    => $z,
+                'P'    => $p,
+                'sumP' => $sumP
+            );
 
             /** calculate main area */
             if ($i == 51) $sigmaMin1 = $sumP;

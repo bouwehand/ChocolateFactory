@@ -13,4 +13,3 @@
 $lava = $this->lava;
 echo $lava->render('LineChart', 'Stocks', 'stocks-div', array('width'=>1024, 'height'=>768));
 $test = new Test_Statistical();
-$test->normality(183, 10);
