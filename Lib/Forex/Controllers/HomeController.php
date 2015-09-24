@@ -70,4 +70,57 @@ class HomeController extends ChocolateFactory_MVC_Controller {
         $graph->addLine($lines);
         $graph->render();
     }
+
+    public function tool()
+    {
+        $csvFilePath = CHOCOLATE_FACTORY_DOC . '/AAPL.csv';
+        $csv = ChocolateFactory_Core_Csv::init($csvFilePath);
+
+        $rates = $csv->getColumn('Adj Close');
+        $dates = $csv->getColumn('Date');
+        /*
+                // calculate the rate of for each bar
+                $returns = array();
+
+                $final = 0;
+                foreach ($rates as $i => $value) {
+                    // values should be positive, so they will be treated as difference of 0
+
+
+                     using the rates of return which are normaly distributed
+                    if($final) $returns[] = abs(Tool_Financial::rateOfReturn($value, $final));
+                    $final = $value;
+                }
+        */
+        rsort($rates);
+
+        // calculate the mean and the sd
+        $mean = Tool_Statistic::mean($rates);
+        //die(var_dump($mean));
+        $sd = Tool_Statistic::sd($rates);
+
+        $lava = new Khill\Lavacharts\Lavacharts;
+        $stocksTable = $lava->DataTable();  // Lava::DataTable() if using Laravel
+
+        $stocksTable
+            ->addDateColumn('Day')
+            ->addNumberColumn('Rate of return');
+
+        // Random Data For Example
+        foreach ($rates as $i => $rate)
+        {
+            $rowData = array(
+                "$dates[$i]", $rate
+            );
+
+            $stocksTable->addRow($rowData);
+        }
+
+        $lava->LineChart('Stocks')
+            ->setOptions(array(
+                    'datatable' => $stocksTable,
+                    'title' => 'Stock Market Trends'
+                ));
+        $this->lava = $lava;
+    }
 }

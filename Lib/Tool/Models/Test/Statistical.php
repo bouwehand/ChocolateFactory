@@ -10,8 +10,10 @@ class Test_Statistical{
     /**
      *
      */
-    public function normality($mean, $sd)
+    public function normality($mean, $sd, $verbose = true)
     {
+        $data = array();
+
         $sumP = 0;
         $i = 0;
         for($z = -6; $z < 6; $z += 0.1) {
@@ -26,12 +28,15 @@ class Test_Statistical{
             if ($i == 51) $sigmaMin1 = $sumP;
             if ($i == 71) $sigma1 = $sumP;
 
-            echo "z: " . number_format($z, 1) . "\t\t x: " . number_format($x, 9) . " \t\t P: ". number_format($sumP, 9). PHP_EOL ;
+            if($verbose) echo "z: " . number_format($z, 1) . "\t\t x: " . number_format($x, 9) . " \t\t P: ". number_format($sumP, 9). PHP_EOL ;
         }
 
-        $sigma1Area =  $sigma1 - $sigmaMin1;
-        echo PHP_EOL;
-        echo " total density $sumP : 1 , sigma $sigma1Area : 0.682 ". PHP_EOL;
-        echo PHP_EOL;
+        if($verbose) {
+            $sigma1Area =  $sigma1 - $sigmaMin1;
+            echo PHP_EOL;
+            echo " total density $sumP : 1 , sigma $sigma1Area : 0.682 ". PHP_EOL;
+            echo PHP_EOL;
+        }
+        return $data;
     }
 }
