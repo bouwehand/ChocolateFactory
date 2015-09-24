@@ -3,9 +3,9 @@
  * Chocolate Factory Framework
  *
  * Because i wanna be in the chocolate factory with Willy Fuckin Wonka
- * Dancing with the Oempa loempas like this
+ * Dancing with the Oompa-Loompas like this
  *
- * @autor       Bastiaan Jeroen Ouwehand
+ * @autor       Bastiaan Jeroen Ouwehand <b.j.ouwehand@gmail.com>
  * @version     camsite
  *
  * Realy simple Framework. I develop while programing. Each time I think, would it not be cool if... and then i add
@@ -24,12 +24,10 @@ ini_set("display_errors", 1);
  * Include the Chocolate Factory and run
  */
 define('ROOT', getcwd());
-
 define('CHOCOLATE_FACTORY', ROOT . '/ChocolateFactory');
 define('CHOCOLATE_FACTORY_CORE' , CHOCOLATE_FACTORY . '/Core');
 define('CHOCOLATE_FACTORY_LIB', CHOCOLATE_FACTORY . '/Lib');
 define('CHOCOLATE_FACTORY_DOC', ROOT . '/doc');
-
 define('APP_LIB', ROOT . '/Lib');
 define('VENDOR_LIB', ROOT . '/vendor');
 
