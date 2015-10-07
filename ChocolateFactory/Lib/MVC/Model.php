@@ -1,6 +1,5 @@
 <?php
-require_once(CHOCOLATE_FACTORY_LIB . "/Core/Query.php");
-class ChocolateFactory_MVC_Model extends ChocolateFactory_Core_Query {
+class ChocolateFactory_MVC_Model {
 
 	protected $model;
 	private $_data;
@@ -8,17 +7,6 @@ class ChocolateFactory_MVC_Model extends ChocolateFactory_Core_Query {
 	public function __construct(){
 		$this->model = lcfirst(get_class($this));
 	   $query = self::getInstance();
-    }
-
-    /**
-     * Dynamic database row fatching function
-     */
-    public function fetch($arg) {
-
-        $dbh = self::getInstance();
-        $sth = $dbh->prepare("SELECT * FROM $this->model LIMIT $arg");
-        $sth->execute();
-        return $sth->fetchAll();
     }
 
     public function __call($functionName, $arguments) {
