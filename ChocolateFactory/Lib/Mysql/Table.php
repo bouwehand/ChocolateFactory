@@ -13,22 +13,39 @@
  */
 Class ChocolateFactory_Mysql_Table
 {
+    /**
+     * Standard fields in every table, key and last edit
+     * @var array
+     */
+    static protected $_default_fields = array(
+        "id",
+        "changed"
+    );
+
+    /**
+     * @var array
+     */
     static protected $_columnTypes = array(
-        'int' => 'int(11) unsigned',
-        'string' => 'varchar(255)',
-        'float' => 'float(19,8)',
+        'int'       => 'int(11) unsigned',
+        'string'    => 'varchar(255)',
+        'float'     => 'float(19,8)',
         'timestamp' => 'DATETIME'
     );
 
+    /**
+     * @var string table name
+     */
     protected $_name;
 
+    /**
+     * @var array
+     */
     protected $_columns = array();
 
     /**
-     * @var ChocolateFactory_Mysql_Query
+     * @var array
      */
-    protected $query;
-
+    protected $_data = array();
     /**
      * @param mixed $name
      */
@@ -64,6 +81,22 @@ Class ChocolateFactory_Mysql_Table
     }
 
     /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->_data = $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->_data;
+    }
+
+    /**
      * @param $name
      * @internal param $table
      * @return int
@@ -72,7 +105,30 @@ Class ChocolateFactory_Mysql_Table
     {
 
         $sql = " TRUNCATE TABLE $name";
-        return $this->query->exec($sql);
+        $db = ChocolateFactory_Mysql_Db::init();
+        $db->query->exec($sql);
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @return \ChocolateFactory_Mysql_Table
+     */
+    public static function init($name)
+    {
+        $db = ChocolateFactory_Mysql_Db::init();
+        $db->query->setTable($name);
+        $result = $db->query->describe();
+        $columns = array();
+        foreach ($result as $entry) {
+            if(! in_array($entry['Field'], self::$_default_fields)) {
+                $columns[] = $entry;
+            }
+        }
+        $table = new self();
+        $table->setName($name);
+        $table->setColumns($columns);
+        return $table;
     }
 
     /**
@@ -107,10 +163,9 @@ Class ChocolateFactory_Mysql_Table
 
         // insert all the data
         foreach($data as $row) {
-            $db->query->insert($row, true);
+            $db->query->insert($row);
         }
+        $table->setData($data);
         return $table;
     }
-
-
 }

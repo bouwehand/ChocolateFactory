@@ -12,7 +12,7 @@
 class ChocolateFactory_MVC_Request
 {
     /**
-     * Instance $requestInstance Instanse of the request Object
+     * Instance $requestInstance Instance of the request Object
      */
     private static $_instance;
 

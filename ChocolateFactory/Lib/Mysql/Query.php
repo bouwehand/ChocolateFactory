@@ -83,6 +83,16 @@ class ChocolateFactory_Mysql_Query extends ChocolateFactory_Mysql_Db {
 
 
     /**
+     * @return array
+     */
+    public function describe()
+    {
+        $query = $this::$_pdo->query('SHOW FULL COLUMNS FROM ' . $this->getTable());
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $results;
+    }
+
+    /**
      * Fetch all wrapper PDO
      *
      * @param $sql
@@ -92,7 +102,7 @@ class ChocolateFactory_Mysql_Query extends ChocolateFactory_Mysql_Db {
     public function fetchAll($sql, $verbose = false) {
         if ( $verbose) echo $sql;
         try {
-            $sth = $this->_pdo->prepare($sql);
+            $sth = $this::$_pdo->prepare($sql);
             $sth->execute();
             $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
@@ -111,7 +121,7 @@ class ChocolateFactory_Mysql_Query extends ChocolateFactory_Mysql_Db {
     public function fetchOne($sql , $verbose  = false) {
         if ( $verbose) echo $sql;
         try {
-            $sth = $this->_pdo->prepare($sql);
+            $sth = $this::$_pdo->prepare($sql);
             $sth->execute();
             $result = $sth->fetch();
         } catch(PDOException $e) {

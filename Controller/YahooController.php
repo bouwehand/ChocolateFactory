@@ -14,41 +14,8 @@ class YahooController extends ChocolateFactory_MVC_Controller {
 
     public function home()
     {
-        $csv = ChocolateFactory_Core_Csv::init(CHOCOLATE_FACTORY_DOC .'/snp500.csv');
-        $columns = array (
-            array(
-                'name' => 'symbol',
-                'type' => 'string',
-            ),
-            array(
-                'name' => 'security',
-                'type'  => 'string',
-            ),
-            array(
-                'name' => 'gicssector',
-                'type'  => 'string',
-            ),
-            array(
-                'name' => 'gicsindustry',
-                'type'  => 'string',
-            ),
-            array(
-                'name' => 'headquarters',
-                'type' => 'string'
-            ),
-            array(
-                'name' => 'added',
-                'type'  => 'timestamp',
-            ),
-            array(
-                'name' => 'cik',
-                'type' => 'int'
-            )
-        );
 
-        $table = ChocolateFactory_Mysql_Table::createTable("snp500", $columns, $csv->getData());
-
-
+        $table = ChocolateFactory_Mysql_Table::init('snp500');
         die(var_dump($table));
     }
 
