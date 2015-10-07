@@ -124,4 +124,35 @@ class HomeController extends ChocolateFactory_MVC_Controller {
                 ));
         $this->lava = $lava;
     }
+
+    public function regression()
+    {
+        $csvFilePath = CHOCOLATE_FACTORY_DOC . '/AAPL.csv';
+        $csv = ChocolateFactory_Core_Csv::init($csvFilePath);
+
+        $rates = $csv->getColumn('Adj Close');
+        $dates = $csv->getColumn('Date');
+
+        $lava = new Khill\Lavacharts\Lavacharts;
+        $stocksTable = $lava->DataTable();  // Lava::DataTable() if using Laravel
+
+        $stocksTable
+            ->addDateColumn('Date')
+            ->addNumberColumn('Close');
+
+        foreach($rates as $i => $rate) {
+            $rowData = array(
+                $dates[$i], log($rate)
+            );
+            $stocksTable->addRow($rowData);
+        }
+        $lava->LineChart('Stocks')
+            ->setOptions(array(
+                    'datatable' => $stocksTable,
+                    'title' => 'AAPL CLOSE'
+                ));
+        $this->lava = $lava;
+
+
+    }
 }
