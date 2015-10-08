@@ -99,31 +99,40 @@ class ChocolateFactory_Mysql_Query extends ChocolateFactory_Mysql_Db {
      * @param bool $verbose
      * @return array
      */
-    public function fetchAll($sql, $verbose = false) {
+    public function fetchAll($sql = null, $verbose = false) {
+        if (!$sql) {
+            $sql = " SELECT * FROM " . $this->getTable() . " WHERE 1";
+        }
         if ( $verbose) echo $sql;
         try {
             $sth = $this::$_pdo->prepare($sql);
             $sth->execute();
             $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
         } catch(PDOException $e) {
             echo $e->getMessage() . " " . $sql ;
         }
-        return $result;
     }
 
     /**
      * Fetch One wrapper Pdo
      *
-     * @param $sql
+     * @param      $id
+     * @param      $sql
      * @param bool $verbose
      * @return mixed
      */
-    public function fetchOne($sql , $verbose  = false) {
+    public function fetchOne($id, $sql=null , $verbose  = false) {
+
+        if (!$sql) {
+            $sql = " SELECT * FROM {$this->getTable()} WHERE id = ?";
+        }
+
         if ( $verbose) echo $sql;
         try {
             $sth = $this::$_pdo->prepare($sql);
-            $sth->execute();
-            $result = $sth->fetch();
+            $sth->execute(array($id));
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
             echo $e->getMessage() . " " . $sql ;
         }

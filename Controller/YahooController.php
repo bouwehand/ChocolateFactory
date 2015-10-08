@@ -16,6 +16,7 @@ class YahooController extends ChocolateFactory_MVC_Controller {
     {
 
         $table = ChocolateFactory_Mysql_Table::init('snp500');
+        $table->getId(11);
         die(var_dump($table));
     }
 
@@ -24,10 +25,35 @@ class YahooController extends ChocolateFactory_MVC_Controller {
         $yahoo = new YahooFinance();
         $json = $yahoo->getQuotes('SPY');
         $quotes = json_decode($json);
-
-
         $time = $quotes->query->created;
 
         die(var_dump($quotes->query->results));
+    }
+
+    public function historical()
+    {
+        $columns = array(
+
+        );
+
+        // walk trough the whole snp500
+        $table = ChocolateFactory_Mysql_Table::init('snp500');
+        $yahoo = new YahooFinance();
+        foreach ($table->getAll() as $row) {
+
+            // get the historical data
+            $json = $yahoo->getHistoricalData($row['symbol'], "2015-01-01", "2015-10-07");
+            $json = json_decode($json);
+            if(!$json) {
+                continue;
+            }
+
+            ChocolateFactory_Mysql_Table::createTable('Yahoo_historical_' . $row['symbol'], $columns);
+            foreach($json->query->results as $quote) {
+                die(var_dump($quote));
+            }
+
+
+        };
     }
 }

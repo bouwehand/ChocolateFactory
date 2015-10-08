@@ -119,15 +119,9 @@ Class ChocolateFactory_Mysql_Table
         $db = ChocolateFactory_Mysql_Db::init();
         $db->query->setTable($name);
         $result = $db->query->describe();
-        $columns = array();
-        foreach ($result as $entry) {
-            if(! in_array($entry['Field'], self::$_default_fields)) {
-                $columns[] = $entry;
-            }
-        }
         $table = new self();
         $table->setName($name);
-        $table->setColumns($columns);
+        $table->setColumns($result);
         return $table;
     }
 
@@ -167,5 +161,32 @@ Class ChocolateFactory_Mysql_Table
         }
         $table->setData($data);
         return $table;
+    }
+
+    /**
+     * Load function
+     */
+    public function getAll()
+    {
+        $name = $this->getName();
+        $db = ChocolateFactory_Mysql_Db::init();
+        $db->query->setTable($name);
+        $data = $db->query->fetchAll();
+        $this->setData($data);
+        return $data;
+    }
+
+    /**
+     * @param $id
+     * @return $this
+     */
+    public function getId($id)
+    {
+        $name = $this->getName();
+        $db = ChocolateFactory_Mysql_Db::init();
+        $db->query->setTable($name);
+        $data = $db->query->fetchOne($id);
+        $this->setData($data);
+        return $data;
     }
 }
