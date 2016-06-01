@@ -1,0 +1,6 @@
+{
+    "module"  : "Tool",
+    "cli" : {
+        "doge" : "dogeQuestion.php"
+    }
+}

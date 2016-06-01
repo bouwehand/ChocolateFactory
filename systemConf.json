@@ -1,0 +1,44 @@
+{
+  "Cli": {
+    "module": "Cli"
+  },
+  "core": {
+    "module": "core",
+    "query": {
+      "dsn": "mysql:dbname=ecb;host=localhost",
+      "user": "root",
+      "password": "chaos"
+    },
+    "logger": {
+      "errorlog": "\/log\/error.log"
+    }
+  },
+  "MVC": {
+    "module": "MVC",
+    "default": {
+      "homepage": "home",
+      "action": "home",
+      "model": "home"
+    },
+    "dir": {
+      "views": "views"
+    }
+  },
+  "Darwin": {
+    "module": "Darwin",
+    "cli": {
+      "darwin": "darwin.php"
+    }
+  },
+  "draw": {
+    "module": "draw"
+  },
+  "Forex": {
+    "module": "Forex",
+    "cli": {
+      "feed": "feed.php",
+      "market": "runMarket.php",
+      "yahoo": "yahoo.php"
+    }
+  }
+}

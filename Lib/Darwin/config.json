@@ -1,0 +1,6 @@
+{
+    "module"  : "Darwin",
+    "cli" : {
+        "darwin" : "darwin.php"
+    }
+}

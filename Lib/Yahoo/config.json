@@ -1,0 +1,6 @@
+{
+    "module"  : "Yahoo",
+    "cli" : {
+        "yahoo" : "yahoo.php"
+    }
+}
