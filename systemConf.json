@@ -5,9 +5,9 @@
   "core": {
     "module": "core",
     "query": {
-      "dsn": "mysql:dbname=ecb;host=localhost",
+      "dsn": "mysql:dbname=<databasename>;host=localhost",
       "user": "root",
-      "password": "chaos"
+      "password": "password"
     },
     "logger": {
       "errorlog": "\/log\/error.log"
@@ -37,7 +37,18 @@
     "module": "Forex",
     "cli": {
       "feed": "feed.php",
-      "market": "runMarket.php",
+      "market": "runMarket.php"
+    }
+  },
+  "Tool": {
+    "module": "Tool",
+    "cli": {
+      "doge": "dogeQuestion.php"
+    }
+  },
+  "Yahoo": {
+    "module": "Yahoo",
+    "cli": {
       "yahoo": "yahoo.php"
     }
   }

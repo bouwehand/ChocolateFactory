@@ -88,11 +88,15 @@ class ChocolateFactory_Core_Csv
      *
      * @param $name
      * @return array
+     * @throws Exception
      */
     public function getColumn($name)
     {
         $column = array();
         foreach ($this->getData() as $row) {
+            if (empty($row[$name])) {
+                throw new Exception("Csv column '$name' not set in head");
+            }
             $column[] = $row[$name];
         }
         return $column;

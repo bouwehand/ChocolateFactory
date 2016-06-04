@@ -66,12 +66,17 @@ class HomeController extends ChocolateFactory_MVC_Controller {
         $graph->render();
     }
 
+    /**
+     * First setup for the dev of the normality tool
+     *
+     * @throws Exception
+     */
     public function tool()
     {
         $csvFilePath = CHOCOLATE_FACTORY_DOC . '/AAPL.csv';
         $csv = ChocolateFactory_Core_Csv::init($csvFilePath);
 
-        $rates = $csv->getColumn('Adj Close');
+        $rates = $csv->getColumn('AdjClose');
         $dates = $csv->getColumn('Date');
 
                 // calculate the rate of for each bar
@@ -81,8 +86,7 @@ class HomeController extends ChocolateFactory_MVC_Controller {
                 foreach ($rates as $i => $value) {
                     // values should be positive, so they will be treated as difference of 0
 
-
-                    // using the rates of return which are normaly distributed
+                    // using the rates of return which are normally distributed
                     if($final) $returns[] = abs(Tool_Financial::rateOfReturn($value, $final));
                     $final = $value;
                 }
@@ -106,14 +110,12 @@ class HomeController extends ChocolateFactory_MVC_Controller {
             ->addNumberColumn('p1 : distribution rates AAPL')
             ->addNumberColumn('p2 : distribution male length');
 
-
         // Random Data For Example
         foreach ($normal as $i => $value)
         {
             $rowData = array(
                 $value['z'],  $value['P'], $normal2[$i]['P']
             );
-
             $stocksTable->addRow($rowData);
         }
 
@@ -122,6 +124,44 @@ class HomeController extends ChocolateFactory_MVC_Controller {
                     'datatable' => $stocksTable,
                     'title' => 'Stock Market Trends'
                 ));
+        $this->lava = $lava;
+    }
+
+    /**
+     * fire up the mutherfucker
+     */
+    public function normality()
+    {
+        
+        $a = 2;
+        $data = array();
+
+
+        $lava = new Khill\Lavacharts\Lavacharts;
+
+        /** @var $stocksTable \Khill\Lavacharts\Configs\DataTable */
+        $stocksTable = $lava->DataTable();  // Lava::DataTable() if using Laravel
+
+
+        $stocksTable
+            ->addNumberColumn('x')
+            ->addNumberColumn('p(x)');
+
+        for ($x = -2; $x < 2; $x = $x + 0.1) {
+
+            $y = Tool_Statistic::CauchyDistribution($x, 0,  0.75);
+            echo $x . " " . $y. PHP_EOL;
+
+            $stocksTable->addRow(array($x, $y));
+        }
+
+
+        $lava->LineChart('Stocks')
+            ->setOptions(array(
+                'datatable' => $stocksTable,
+                'title' => 'Stock Market Trends'
+            ));
+
         $this->lava = $lava;
     }
 }

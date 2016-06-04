@@ -4,6 +4,14 @@
  *
  * Given the financial market of the dogeCoin on 2 sept. What is the change of making a profit?
  *
+ * To do: implement H0 to H1 structure
+ *
+ * assume that h0 is true and there is no distirbution
+ *
+ * try to model a densitiy function and give a P that this is true under an given ALPHA
+ *
+ * See if alpha is met and decide if HO is rejected or not
+ *
  * @category Wolf
  * @package forex
  * @author Bas Ouwehand <b.ouwehand@youwe.nl>
@@ -12,7 +20,7 @@
 $csvFilePath = CHOCOLATE_FACTORY_DOC . '/AAPL.csv';
 $csv = ChocolateFactory_Core_Csv::init($csvFilePath);
 
-$rates = $csv->getColumn('Adj Close');
+$rates = $csv->getColumn('AdjClose');
 
 
 // calculate the rate of for each bar

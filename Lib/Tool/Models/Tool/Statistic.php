@@ -14,7 +14,8 @@ class Tool_Statistic
      * @param array $x
      * @return float
      */
-    static function mean(Array $x) {
+    static function mean(Array $x)
+    {
         return array_sum($x) / count($x);
     }
 
@@ -24,7 +25,8 @@ class Tool_Statistic
      * @param       $sigma
      * @return float
      */
-    static function zScore($x, $m, $sigma) {
+    static function zScore($x, $m, $sigma)
+    {
 
         return ($x - $m) / $sigma;
     }
@@ -38,7 +40,8 @@ class Tool_Statistic
      * @param array $x
      * @return float
      */
-    static function sd(Array $x) {
+    static function sd(Array $x)
+    {
         $m = self::mean($x);
         $var = 0;
         $p = count($x);
@@ -52,7 +55,8 @@ class Tool_Statistic
      * @param array $x
      * @return mixed
      */
-    static function spread(Array $x) {
+    static function spread(Array $x)
+    {
         return max($x) - min($x);
     }
 
@@ -99,8 +103,23 @@ class Tool_Statistic
      * @param $sigma
      * @return float
      */
-    static function normalDistribution($x, $mu, $sigma) {
-        return exp(-0.5 * ($x - $mu) * ($x - $mu) / ($sigma*$sigma))
-        / ($sigma * sqrt(2.0 * M_PI));
+    static function normalDistribution($x, $mu, $sigma)
+    {
+        return exp(-0.5 * ($x - $mu) * ($x - $mu) / ($sigma*$sigma)) / ($sigma * sqrt(2.0 * M_PI));
+    }
+
+    /**
+     * Fat tail distribution for description of stock markets
+     *
+     * @param $x int  Random variable from data
+     * @param $x0 int sets the centre of the model for dialing
+     * @param $y number for dialing the model
+     * @return number
+     * @throws Exception
+     */
+    static function CauchyDistribution($x, $x0 , $y)
+    {
+        return 1 /  (M_PI * $y) * ( pow($y ,2) / (pow(($x - $x0), 2) + pow($y, 2)));
+
     }
 }
