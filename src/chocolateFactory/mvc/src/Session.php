@@ -1,4 +1,11 @@
 <?php
+
+namespace ChocolateFactory\MVC\Session;
+
+/**
+ * Class ChocolateFactory_MVC_Session
+ * @package ChocolateFactory\MVC\Session
+ */
 class ChocolateFactory_MVC_Session {
 
 	private $sessionId;

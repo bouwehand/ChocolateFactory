@@ -1,4 +1,7 @@
 <?php
+
+namespace ChocolateFactory\Core;
+
 /**
  * Csv.php
  *
@@ -10,7 +13,7 @@
  * @date 9/3/15
  *
  */
-class ChocolateFactory_Core_Csv
+class Csv
 {
 
     /**

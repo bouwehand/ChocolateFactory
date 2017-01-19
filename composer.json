@@ -3,13 +3,22 @@
     "description": "I wanna be with the oempa loopa's dancing like this",
     "require": {
         "php": ">=5.4",
-        "khill/lavacharts":"2.5.*"
+        "khill/lavacharts":"2.5.*",
+        "phpunit/phpunit": "^5.5",
+        "vlucas/phpdotenv": "^2.4"
     },
     "authors": [
         {
             "name": "Bas Ouwehand",
-            "email": "b.ouwehand@youwe.nl"
+            "email": "b.j.ouwehand@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Anomynousdb\\Mysqli\\": "src/anomynousdb/mysqli/src",
+            "ChocolateFactory\\Core\\": "src/chocolateFactory/core/src",
+            "ChocolateFactory\\MVC\\": "src/chocolateFactory/mvc/src"
+        }
+    },
     "minimum-stability": "alpha"
 }

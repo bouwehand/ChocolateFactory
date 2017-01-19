@@ -1,18 +1,22 @@
 <?php
+
+namespace ChocolateFactory\Core;
 /**
  * Created by PhpStorm.
  * User: thrynillan
  * Date: 8/16/14
  * Time: 2:36 PM
  */
-class Cli{
+class Cli {
 
     /**
-     * Run a cli script 
-     * 
-     * @throws Exception
+     * Run a cli script
+     *
+     * $param array$params
+     *
+     * @throws \Exception
      */
-    public function run() {
+    public function run(array $params) {
         $options = getopt('s:');
         if(!isset($options['s'])) {
             die("\n\n options -s<scriptname> not given for cli script \n\n");

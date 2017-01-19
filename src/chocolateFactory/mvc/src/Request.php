@@ -1,5 +1,7 @@
 <?php
 
+namespace ChocolateFactory\MVC;
+
 /**
  * Request Object to handle the requests and return them to the framework
  *
@@ -9,7 +11,7 @@
  * @author B.j.ouwehand <b.j.ouwehand@gmail.com
  *
  */
-class ChocolateFactory_MVC_Request
+class Request
 {
     /**
      * Instance $requestInstance Instance of the request Object

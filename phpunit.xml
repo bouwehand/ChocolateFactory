@@ -1,0 +1,13 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="Anomynousdb">
+            <directory>src/anomynousdb</directory>
+        </testsuite>
+        <testsuite name="ChocolateFactory/core">
+            <directory>src/chocolateFactory/core</directory>
+        </testsuite>
+        <testsuite name="ChocolateFactory/mvc">
+            <directory>src/chocolateFactory/mvc</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

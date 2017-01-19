@@ -1,5 +1,8 @@
 <?php
-class ChocolateFactory_MVC_Template {
+
+namespace ChocolateFactory\MVC;
+
+class Template {
 
     private $controller = null;
     private $action = null;

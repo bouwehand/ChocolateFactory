@@ -1,5 +1,7 @@
 <?php
 
+namespace ChocolateFactory\MVC;
+
 /**
  * Main controller class of my MVC framework
  *
@@ -8,7 +10,7 @@
  * Abstract class for creating a controller in my Framework.
  *
  */
-abstract class ChocolateFactory_MVC_Controller
+abstract class Controller
 {
 
     /**

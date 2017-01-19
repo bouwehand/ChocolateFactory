@@ -1,10 +1,6 @@
 .idea/
-systemConf.json
+/*.phar
+vendor/
+.env
 *.log
-#composter git dirs
-/vendor/**/.git
  # phar archives
- /*.phar
-
-
-/vendor/
