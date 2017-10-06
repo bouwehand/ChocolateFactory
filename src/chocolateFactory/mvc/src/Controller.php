@@ -2,6 +2,7 @@
 
 namespace ChocolateFactory\MVC;
 
+
 /**
  * Main controller class of my MVC framework
  *

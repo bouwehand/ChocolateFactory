@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: thrynillan
@@ -6,6 +7,7 @@
  * Time: 11:44 AM
  */
 $market = new Ing_Models_Ing();
+
 ?>
 <html>
 <head>

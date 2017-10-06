@@ -2,6 +2,9 @@
 
 namespace ChocolateFactory\Core;
 
+use ChocolateFactory\MVC\Request;
+use ChocolateFactory\MVC\Controller;
+
 /**
  * Chocolate factory framework
  *

@@ -34,9 +34,9 @@ define('APP_CONTROLLER', ROOT. '/Controller');
 define('APP_VIEW', ROOT . '/view');
 define('VENDOR_LIB', ROOT . '/vendor');
 
-require VENDOR_LIB . '/autoload.php';
-require_once(CHOCOLATE_FACTORY .'/ChocolateFactory.php');
-$chocolateFactory = new ChocolateFactory();
+require __DIR__ . '/vendor/autoload.php';
+
+$chocolateFactory = new ChocolateFactory\Core\ChocolateFactory();
 try {
     $chocolateFactory->run();
 } catch (Exception $e) {
