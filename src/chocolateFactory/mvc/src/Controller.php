@@ -54,7 +54,6 @@ abstract class Controller
 
         // Set the model that is handled by the Controller.
         // $this->setModel($model);
-
         $this->{$this->getAction()}();
 
         // set the name of the module we are working in
@@ -83,7 +82,7 @@ abstract class Controller
      *
      * @param null $name
      * @param null $action
-     * @throws Exception
+     * @throws \Exception
      * @return
      * @internal param string $nameController Name handle of the controllerclass
      *                                      that is being called.
@@ -97,16 +96,19 @@ abstract class Controller
 
         if (empty($name)) {
             if (!isset($defaultHomepage) || empty($defaultHomepage) ) {
-                throw new Exception('MVC/default/homepage was not configured' . PHP_EOL);
+                throw new \Exception('MVC/default/homepage was not configured' . PHP_EOL);
             }
             $name = $defaultHomepage;
         }
 
-        $nameController = $name . 'Controller';
+        $nameController = ucfirst($name . 'Controller');
+        if (!include_once (APP_CONTROLLER . '/' . $nameController . '.php')) {
+            throw new \Exception(APP_CONTROLLER . '/' . $nameController . '.php' . PHP_EOL);
+        }
 
         // check if the controller class exists
         if (!class_exists($nameController)) {
-            throw new Exception('Controller ' . $nameController . ' was not created' . PHP_EOL);
+            throw new \Exception('Controller ' . $nameController . ' was not created' . PHP_EOL);
         }
 
         // return the right controller
@@ -160,7 +162,7 @@ abstract class Controller
             ) {
                 $model = $defaultModel;
             } else {
-                throw new Exeption ('No model configured for this controller!');
+                throw new \Exception ('No model configured for this controller!');
             }
         }
 
@@ -180,7 +182,7 @@ abstract class Controller
      */
     public function setModule()
     {
-        $reflector = new ReflectionClass($this->getControllerName() . 'Controller');
+        $reflector = new \ReflectionClass($this->getControllerName() . 'Controller');
         $module = explode('/', str_replace(APP_LIB, '', $reflector->getFileName()));
         $this->_module = $module[1];
         return $this;

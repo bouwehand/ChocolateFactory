@@ -1,0 +1,55 @@
+{
+    "Cli": {
+        "module": "Cli"
+    },
+    "core": {
+        "module": "core",
+        "query": {
+            "dsn": "mysql:dbname=<databasename>;host=localhost",
+            "user": "root",
+            "password": "password"
+        },
+        "logger": {
+            "errorlog": "\/log\/error.log"
+        }
+    },
+    "MVC": {
+        "module": "MVC",
+        "default": {
+            "homepage": "home",
+            "action": "home",
+            "model": "home"
+        },
+        "dir": {
+            "views": "views"
+        }
+    },
+    "Darwin": {
+        "module": "Darwin",
+        "cli": {
+            "darwin": "darwin.php"
+        }
+    },
+    "draw": {
+        "module": "draw"
+    },
+    "Forex": {
+        "module": "Forex",
+        "cli": {
+            "feed": "feed.php",
+            "market": "runMarket.php"
+        }
+    },
+    "Tool": {
+        "module": "Tool",
+        "cli": {
+            "doge": "dogeQuestion.php"
+        }
+    },
+    "Yahoo": {
+        "module": "Yahoo",
+        "cli": {
+            "yahoo": "yahoo.php"
+        }
+    }
+}

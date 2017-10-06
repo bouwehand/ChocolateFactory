@@ -30,7 +30,7 @@ define('CHOCOLATE_FACTORY_LIB', CHOCOLATE_FACTORY . '/Lib');
 
 define('CHOCOLATE_FACTORY_DOC', ROOT . '/doc');
 define('APP_LIB', ROOT . '/Lib');
-define('APP_CONTROLLER', ROOT. '/Controller');
+define('APP_CONTROLLER', ROOT. '/controller');
 define('APP_VIEW', ROOT . '/view');
 define('VENDOR_LIB', ROOT . '/vendor');
 
@@ -40,6 +40,6 @@ $chocolateFactory = new ChocolateFactory\Core\ChocolateFactory();
 try {
     $chocolateFactory->run();
 } catch (Exception $e) {
-    ChocolateFactory_Core_Logger::error($e->getMessage());
+    \ChocolateFactory\Core\Logger::error($e->getMessage());
     die($e->getMessage());
 }

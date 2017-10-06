@@ -7,7 +7,7 @@
  * Time: 11:44 AM
  */
 $market = new Ing_Models_Ing();
-
+die(var_dump($market));
 ?>
 <html>
 <head>

@@ -14,6 +14,10 @@
         }
     ],
     "autoload": {
+        "psr-0":
+        {
+            "Controller" : "controller"
+        },
         "psr-4": {
             "Anomynousdb\\Mysqli\\": "src/anomynousdb/mysqli/src",
             "ChocolateFactory\\Core\\": "src/chocolateFactory/core/src",

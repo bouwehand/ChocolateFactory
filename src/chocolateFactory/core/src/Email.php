@@ -1,11 +1,15 @@
 <?php
+
+namespace ChocolateFactory\Core;
+
 /**
  * Created by PhpStorm.
  * User: vanax
  * Date: 5/13/14
  * Time: 12:01 PM
  */
-class  ChocolateFactory_Core_Email{
+class  Email
+{
 
     protected $headers;
     protected $params;
@@ -105,7 +109,7 @@ class  ChocolateFactory_Core_Email{
     /**
      *	Give an email with a reset link
      *		@param	$message	string 	new message
-     *		@return	this
+     *		@return	$this
      */
     public function setMessage($message){
         $this->_content = $message;

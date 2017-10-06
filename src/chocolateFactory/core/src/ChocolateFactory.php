@@ -2,6 +2,7 @@
 
 namespace ChocolateFactory\Core;
 
+use ChocolateFactory\MVC\JsonConfig;
 use ChocolateFactory\MVC\Request;
 use ChocolateFactory\MVC\Controller;
 
@@ -20,6 +21,9 @@ class ChocolateFactory {
      */
     public function run() {
 
+        $jsonConfig = JsonConfig::getInstance();
+
+ 
         // Run the mvc web framework if we are in the browser
         // else run the cli version of the framework
         if(php_sapi_name() == 'cli') {
