@@ -15,7 +15,7 @@ class IngController extends ChocolateFactory_MVC_Controller {
      * home controller
      */
     public function home() {
-        $csv = Ing_Models_Ing::init(CHOCOLATE_FACTORY_DOC . '/NL16INGB0006602425_01-01-2016_30-05-2016.csv')
+        $csv = Ing_Models_Ing::init(CHOCOLATE_FACTORY_DOC . '/NL16INGB0006602425_01-01-2017_05-10-2017.csv')
             ->dropColumn('Mededelingen')
             ->dropColumn('MutatieSoort')
             ->dropColumn('NaamOmschrijving')

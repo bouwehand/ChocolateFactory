@@ -6,4 +6,6 @@
  * Time: 23:33
  */
 $lava = $this->lava;
-echo $lava->render('LineChart', 'Stocks', 'stocks-div', array('width'=>1024, 'height'=>768));
+?>
+    <div id="poll_div"></div>
+<?= $lava->render('BarChart', 'Votes', 'poll_div', array('width'=>1000, 'height'=>1000)) ?>

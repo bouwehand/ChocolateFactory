@@ -27,10 +27,15 @@ class Tool_Statistic
      */
     static function zScore($x, $m, $sigma)
     {
-
         return ($x - $m) / $sigma;
     }
 
+    /**
+     * @param $z
+     * @param $m
+     * @param $sigma
+     * @return mixed
+     */
     static function transformZScoreToX($z, $m , $sigma)
     {
         return $sigma * $z + $m;
@@ -77,13 +82,14 @@ class Tool_Statistic
         //Sum of the product of first and Second Scores
         $sumPxy = 0;
         //Sum of First Scores
-        $sumX = 0;
+        $sumX   = 0;
         //Sum of square First Scores
-        $sumXs = 0;
+        $sumXs  = 0;
         //Sum of Second Scores
-        $sumY = 0;
+        $sumY   = 0;
         //Sum of square Second Scores
-        $sumYs = 0;
+        $sumYs  = 0;
+
         foreach($x as $i => &$value) {
             $sumPxy += $value * $y[$i];
             $sumX += $value;
@@ -92,7 +98,7 @@ class Tool_Statistic
             $sumYs += $y[$i] * $y[$i];
         }
         $correlation = ((($n * $sumPxy) - ($sumX * $sumY)) / sqrt(
-                ($n * $sumXs - ($sumX * $sumX)) * ($n * $sumYs - ($sumY * $sumY))
+            ($n * $sumXs - ($sumX * $sumX)) * ($n * $sumYs - ($sumY * $sumY))
         ));
         return $correlation;
     }
@@ -113,13 +119,12 @@ class Tool_Statistic
      *
      * @param $x int  Random variable from data
      * @param $x0 int sets the centre of the model for dialing
-     * @param $y number for dialing the model
+     * @param $y number for dialing the model suggested are 0.75, 1 , 2
      * @return number
      * @throws Exception
      */
     static function CauchyDistribution($x, $x0 , $y)
     {
         return 1 /  (M_PI * $y) * ( pow($y ,2) / (pow(($x - $x0), 2) + pow($y, 2)));
-
     }
 }

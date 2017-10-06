@@ -7,8 +7,8 @@
  */
 class Ing_Models_Ing extends ChocolateFactory_Core_Csv
 {
-    //const INIT_RATE = -1428.12;
-    const INIT_RATE = 500;
+    const INIT_RATE = -1428.12;
+    //const INIT_RATE = 500;
 
     const COLUMN_DATE       = 'Datum';
     const COLUMN_MUTATION   = 'AfBij';

@@ -1,4 +1,8 @@
 <?php
+
+
+use Khill\Lavacharts\Lavacharts;
+
 /**
  *
  */
@@ -132,36 +136,41 @@ class HomeController extends ChocolateFactory_MVC_Controller {
      */
     public function normality()
     {
-        
-        $a = 2;
-        $data = array();
+        $csvFilePath = CHOCOLATE_FACTORY_DOC . '/AAPL.csv';
+        $csv = ChocolateFactory_Core_Csv::init($csvFilePath);
 
+        $rates = $csv->getColumn('AdjClose');
 
-        $lava = new Khill\Lavacharts\Lavacharts;
+        // calculate the rate of for each bar
+        $returns = array();
 
-        /** @var $stocksTable \Khill\Lavacharts\Configs\DataTable */
-        $stocksTable = $lava->DataTable();  // Lava::DataTable() if using Laravel
+        $final = 0;
+        foreach ($rates as $i => $value) {
+            // values should be positive, so they will be treated as difference of 0
 
+            // using the rates of return which are normally distributed
+            if($final) $returns[] = abs(Tool_Financial::rateOfReturn($value, $final));
+            $final = $value;
+        }
+        //$rates = $returns;
+        rsort($rates);
 
-        $stocksTable
-            ->addNumberColumn('x')
-            ->addNumberColumn('p(x)');
+        $lava = new Lavacharts; // See note below for Laravel
+        $votes  = $lava->DataTable();
+        $votes->addStringColumn('Food Poll')
+            ->addNumberColumn('Votes');
 
-        for ($x = -2; $x < 2; $x = $x + 0.1) {
-
-            $y = Tool_Statistic::CauchyDistribution($x, 0,  0.75);
-            echo $x . " " . $y. PHP_EOL;
-
-            $stocksTable->addRow(array($x, $y));
+        // Random Data For Example
+        foreach ($rates as $i => $value)
+        {
+            $votes->addRow(array($i, $value));
         }
 
-
-        $lava->LineChart('Stocks')
-            ->setOptions(array(
-                'datatable' => $stocksTable,
-                'title' => 'Stock Market Trends'
-            ));
-
+        $lava->BarChart('Votes')
+        ->setOPtions(array(
+            'datatable' => $votes,
+            'title' => 'Stock Market Trends'
+        ));
         $this->lava = $lava;
     }
 }
